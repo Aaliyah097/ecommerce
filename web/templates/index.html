@@ -1,12 +1,12 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
         <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
         {#page title#}
         <title>
-                {% block page_title %}Aestetica{% endblock %}
+                {% block page_title %}Ecommerce{% endblock %}
         </title>
         {#jquery#}
         <script src="https://code.jquery.com/jquery-2.2.4.min.js"
@@ -32,12 +32,17 @@
         <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200&family=Montserrat:wght@400&display=swap"
                 rel="stylesheet">
         {#css#}
-        <link rel="stylesheet" href="css/index.css">
+        <link rel="stylesheet" href="{% static 'css/index.css' %}">
 </head>
 <body>
-Hello World!
-{% csrf_token %}
 
-<script src="{% static 'js/index.js' %}"></script>
+{% csrf_token %}
+        {% block page_content %}
+
+     
+
+      
+        {% endblock %}   
+        <script src="{% static 'js/index.js' %}"></script>
 </body>
 </html>

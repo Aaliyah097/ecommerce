@@ -17,7 +17,3 @@ def categories(request):
         content=repo.serialize(repo.list())
     )
 
-@api_view(['GET', ])
-def desktop(request):
-
-    return render(request, 'index.html', {})
