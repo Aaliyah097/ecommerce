@@ -13,5 +13,5 @@ def categories(request):
 
     return HttpResponse(
         status=status.HTTP_200_OK,
-        content=repo.serialize(repo.list())
+        content=json.dumps(repo.serialize(repo.list()))
     )
