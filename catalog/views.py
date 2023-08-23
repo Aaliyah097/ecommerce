@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 import json
+from django.shortcuts import render
 
 
 @api_view(['GET', ])
@@ -15,3 +16,8 @@ def catalog(request):
         status=status.HTTP_200_OK,
         content=repo.serialize(repo.list())
     )
+
+@api_view(['GET', ])
+def desktop(request):
+
+    return render(request, 'index.html', {})
