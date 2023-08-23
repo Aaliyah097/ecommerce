@@ -2,9 +2,14 @@ from catalog.models import Categories
 from catalog.entities.category import Category
 from functools import cache
 from typing import List
+from dataclasses import asdict
 
 
 class CategoryRepository:
+    @staticmethod
+    def serialize(categories: list[Category]) -> list[dict]:
+        return [asdict(cat) for cat in categories]
+
     @cache
     def list(self) -> list[Category]:
         base_categories = Categories.objects.filter(parent__isnull=True)
