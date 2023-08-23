@@ -11,7 +11,10 @@ class Categories(models.Model):
     parent = models.ForeignKey('Categories', verbose_name='Родитель',
                                on_delete=models.SET_NULL,
                                related_name='children',
-                               null=True)
+                               null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         verbose_name = 'Категория'
