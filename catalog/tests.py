@@ -1,7 +1,7 @@
 from django.test import TestCase
 from catalog.models import *
-from catalog.repositories.category_repository import CategoryRepository
-from catalog.entities.category import Category
+from catalog.category.repository import CategoryRepository
+from catalog.category.entity import Category
 
 
 class TestCategories(TestCase):
