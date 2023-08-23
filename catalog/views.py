@@ -7,7 +7,7 @@ from django.shortcuts import render
 
 
 @api_view(['GET', ])
-def catalog(request):
+def categories(request):
     from catalog.repositories.category_repository import CategoryRepository
 
     repo = CategoryRepository()
