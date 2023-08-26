@@ -1,4 +1,4 @@
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -8,12 +8,12 @@ from catalog.category.repository import (
 )
 
 
-class CategoryView(ViewSet):
+class CategoryView(ModelViewSet):
     """categories as tree"""
     queryset = CategoryRepository.get_queryset()
     serializer_class = CategorySerializer
 
-    def list(self, request):
+    def list(self, request, **kwargs):
         repo = CategoryRepository()
 
         return Response(
