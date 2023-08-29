@@ -1,5 +1,3 @@
-
-
 class Brand{
     constructor(name, slug, image_url){
         this.name = name;
@@ -16,8 +14,10 @@ class BrandRepository{
         this.get_all();
     }
 
-    select(brand){
-        this.concrete_brand = brand;
+    select(brand_slug){
+        console.log(this.collection.filter(
+            item=>item.slug === brand_slug
+        ));
     }
 
     delete() {
@@ -115,49 +115,42 @@ class BrandRepository{
 }
 
 
-// class BrandView {
-//     constructor(){
-//         this.repository = new BrandRepository();
-//     }
-
-   
-
-// }
-
-
-var app = new Vue({
-    el: '#app',
-    data: {
-      repository: new BrandRepository(),
-  
-    },
-    methods: {
-        form(){
-            return `
-                <form>
-                    <label for="brand_name">Название</label>
-                    <input id="brand_name" name="name" type="text">
-                    
-                    <label for="brand_slug">Путь</label>
-                    <input id="brand_slug" name="slug" type="text">
-                    
-                    <label for="brand_logo">Лого</label>
-                    <input id="brand_logo" name="file" type="file">
-                    
-                    <button type="button">Сохранить</button>
-                </form>
-            `
-        },
-        selector(){
-            console.log('selector')
-            let select = document.createElement('select');
-            select.id = "brand_selector";
-            this.repository.collection.forEach((brand)=>{
-                let option = document.createElement('option');
-                option.text = brand.name;
-                select.insertAdjacentElement('beforeend', option);
-            })
-       return select.outerHTML
-        }
+class BrandView{
+    constructor() {
+        this.repository = new BrandRepository();
     }
-  })
+    form(){
+        let form = document.createElement('form');
+        form.id = "brand_form";
+
+        let fields = ["name", "slug", "file"]
+
+        fields.forEach((field_name)=>{
+            let input_el = document.createElement('input');
+            input_el.name = field_name;
+            input_el.id = form.id + "_" + field_name
+            input_el.type = "text";
+
+            let label_el = document.createElement("label");
+            label_el.innerText = field_name.toUpperCase();
+            label_el.setAttribute("for", input_el.id)
+
+            form.insertAdjacentElement('beforeend', label_el);
+            form.insertAdjacentElement('beforeend', input_el);
+        })
+
+        return form
+    }
+    selector(){
+        let select = document.createElement('select');
+        select.id = "brand_selector";
+        select.setAttribute('v-model', 'current_el');
+        this.repository.collection.forEach((brand)=>{
+            let option = document.createElement('option');
+            option.text = brand.name;
+            option.value = brand.slug;
+            select.insertAdjacentElement('beforeend', option);
+        })
+        return select
+    }
+}

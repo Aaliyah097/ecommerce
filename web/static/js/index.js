@@ -1,9 +1,13 @@
-document.getElementById('form_category').innerHTML = app.form()
-document.getElementById('selector_form').innerHTML = app.selector()
+let brand_view = new BrandView()
 
-// let view = new BrandView()
-// document.write(view.form())
-// document.write(view.selector().outerHTML)
+document.getElementById('form_category').insertAdjacentElement(
+    'beforeend',
+    brand_view.form()
+)
+document.getElementById('selector_form').insertAdjacentElement(
+    'beforeend',
+    brand_view.selector()
+);
 
 
 let tree = document.getElementById('tree')
