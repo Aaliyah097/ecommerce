@@ -1,6 +1,9 @@
-let view = new BrandView()
-document.write(view.form())
-document.write(view.selector().outerHTML)
+document.getElementById('form_category').innerHTML = app.form()
+document.getElementById('selector_form').innerHTML = app.selector()
+
+// let view = new BrandView()
+// document.write(view.form())
+// document.write(view.selector().outerHTML)
 
 
 let tree = document.getElementById('tree')
