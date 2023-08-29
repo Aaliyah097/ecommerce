@@ -16,7 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from catalog import urls as catalog_urls
+
+from catalog.category.routes import urlpatterns as catalog_urls
 from web import urls as web_urls
 
 
