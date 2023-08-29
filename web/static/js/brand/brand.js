@@ -6,11 +6,12 @@ class Brand{
     }
 }
 
-class Brands{
+class BrandRepository{
     constructor() {
         this.collection = [];
         this.concrete_brand = null;
         this.url = '/catalog/brands/';
+        this.get_all();
     }
 
     select(brand){
@@ -108,5 +109,41 @@ class Brands{
                 )
             )
         })
+    }
+}
+
+
+class BrandView{
+    constructor(){
+        this.repository = new BrandRepository();
+    }
+
+    form(){
+        return `
+            <form>
+                <label for="brand_name">Название</label>
+                <input id="brand_name" name="name" type="text">
+                
+                <label for="brand_slug">Путь</label>
+                <input id="brand_slug" name="slug" type="text">
+                
+                <label for="brand_logo">Лого</label>
+                <input id="brand_logo" name="file" type="file">
+                
+                <button type="button">Сохранить</button>
+            </form>
+        `
+    }
+
+    selector(){
+        console.log(this.repository.collection);
+        let select = document.createElement('select');
+        select.id = "brand_selector";
+        this.repository.collection.forEach((brand)=>{
+            let option = document.createElement('option');
+            option.text = brand.name;
+            select.insertAdjacentElement('beforeend', option);
+        })
+        return select
     }
 }

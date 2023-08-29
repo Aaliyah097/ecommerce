@@ -7,7 +7,7 @@
         <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
         {#page title#}
         <title>
-                {% block page_title %}Ecommerce{% endblock %}
+                {% block page_title %}E-com{% endblock %}
         </title>
         {#jquery#}
         <script src="https://code.jquery.com/jquery-2.2.4.min.js"
@@ -46,20 +46,15 @@
         <script src="{% static 'js/dragndrop/TreeDragZone.js' %}"></script>
         <script src="{% static 'js/dragndrop/TreeDropTarget.js' %}"></script>
 </head>
-
 <body>
 
         {% csrf_token %}
         {% include "navbar/navbar.html" %}
         {% block page_content %}
 
-
-
-
-
         {% endblock %}
+        <script src="{% static 'js/brand/brand.js' %}"></script>
         <script src="{% static 'js/index.js' %}"></script>
         <script src="{% static 'js/brand.js' %}"></script>
 </body>
-
 </html>

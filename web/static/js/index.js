@@ -1,18 +1,6 @@
-
-
-// Перебор всех категорий
-
-// function printNames(data, arr_categories = []) {
-//     for (let item of data) {
-//         if (!arr_categories.includes(item.name)) {
-//             arr_categories.push(item.name);
-//         }
-//         if (item.children) {
-//             printNames(item.children, arr_categories);
-//         }
-//     }
-//     return arr_categories;
-// }
+let view = new BrandView()
+document.write(view.form())
+document.write(view.selector().outerHTML)
 
 
 let tree = document.getElementById('tree')
