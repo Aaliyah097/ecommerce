@@ -3,15 +3,18 @@ from django.db import models
 # Create your models here.
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from django.urls import reverse
 
 
 class Categories(models.Model):
     name = models.CharField(verbose_name='Название',
-                            max_length=50)
+                            max_length=50,
+                            unique=True)
     slug = models.SlugField(verbose_name='Путь',
                             max_length=50,
                             null=False,
-                            blank=True)
+                            primary_key=True,
+                            unique=True)
     parent = models.ForeignKey('Categories', verbose_name='Родитель',
                                on_delete=models.SET_NULL,
                                related_name='children',
@@ -42,15 +45,18 @@ class Categories(models.Model):
 class Brands(models.Model):
     name = models.CharField(verbose_name='Название',
                             max_length=50,
-                            unique=True,
-                            primary_key=True)
+                            unique=True)
     slug = models.SlugField(verbose_name='Путь',
                             max_length=50,
-                            unique=True)
+                            unique=True,
+                            primary_key=True)
     file = models.ImageField(verbose_name='Фото',
                              upload_to='brands/',
                              null=True,
                              blank=True)
+
+    def get_absolute_url(self):
+        return reverse('catalog:brands-detail', kwargs={'pk': self.slug})
 
     def __str__(self):
         return self.name

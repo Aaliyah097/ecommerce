@@ -1,3 +1,5 @@
+import json
+
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
@@ -18,5 +20,5 @@ class CategoryView(ModelViewSet):
 
         return Response(
             status=status.HTTP_200_OK,
-            data=repo.serialize(repo.list())
+            data=json.dumps(repo.serialize(repo.list()))
         )

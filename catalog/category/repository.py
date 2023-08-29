@@ -38,7 +38,6 @@ class CategoryRepository:
         base_categories = Categories.objects.filter(parent__isnull=True)
         return [
             Category(
-                id=cat.id,
                 name=cat.name,
                 slug=cat.slug,
                 children=self.get_children(cat)
@@ -52,7 +51,6 @@ class CategoryRepository:
 
         return [
             Category(
-                id=child.id,
                 name=child.name,
                 slug=child.slug,
                 children=self.get_children(child)
@@ -63,7 +61,6 @@ class CategoryRepository:
     @cache
     def get_parent(self, category: Categories) -> Category | None:
         return Category(
-            id=category.parent.id,
             name=category.parent.name,
             slug=category.parent.slug,
             children=self.get_children(category.parent)

@@ -21,7 +21,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('catalog/', include(catalog_urls)),
+    path('catalog/', include((catalog_urls, 'catalog'), namespace='catalog')),
     path('web/', include(web_urls)),
 
     path(
