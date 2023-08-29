@@ -2,12 +2,8 @@ let brand_view = new BrandView()
 
 document.getElementById('form_category').insertAdjacentElement(
     'beforeend',
-    brand_view.form()
+    brand_view.table()
 )
-document.getElementById('selector_form').insertAdjacentElement(
-    'beforeend',
-    brand_view.selector()
-);
 
 
 let tree = document.getElementById('tree')
@@ -28,7 +24,6 @@ function renderList(item, level = 0) {
             sublist.appendChild(subListItem);
         }
     }
-
     return listItem;
 }
 

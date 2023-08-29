@@ -1,131 +1,48 @@
-class Brand{
-    constructor(name, slug, image_url){
-        this.name = name;
-        this.slug = slug;
-        this.image_url = image_url;
-    }
+const BRAND_URL = '/catalog/brands/';
+const CSRF_TOKEN = $('input[name="csrfmiddlewaretoken"]').val();
+
+
+class Brand extends IModel{
+    static fields = ['name', 'slug', 'file'];
 }
 
-class BrandRepository{
-    constructor() {
-        this.collection = [];
-        this.concrete_brand = null;
-        this.url = '/catalog/brands/';
-        this.get_all();
-    }
-
-    select(brand_slug){
-        console.log(this.collection.filter(
-            item=>item.slug === brand_slug
-        ));
-    }
-
-    delete() {
-        let csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
-        $.ajax(
-            {
-                type: 'delete',
-                url: this.url + this.concrete_brand.slug,
-                headers: {'X-CSRFToken': csrf_token},
-                mode: 'same-origin',
-                async: false,
-                success: function (response) {
-
-                },
-                error: function (xhr, errmsg, err) {
-                    alert([xhr, errmsg, err]);
-                }
-            }
-        )
-        this.concrete_brand = null;
-    }
-
-    update(form_data){
-        let csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
-        $.ajax(
-            {
-                type: 'patch',
-                data: form,
-                url: this.url,
-                headers: {'X-CSRFToken': csrf_token},
-                contentType: 'multipart/form-data',
-                mode: 'same-origin',
-                async: false,
-                success : function(response)
-                {
-
-                },
-                error : function(xhr,errmsg,err) {
-                    console.log(errmsg);
-                }
-            }
-        )
-    }
-
-    create(form_data){
-        let csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
-        $.ajax(
-            {
-                type: 'post',
-                data: form,
-                url: this.url,
-                headers: {'X-CSRFToken': csrf_token},
-                mode: 'same-origin',
-                async: false,
-                success : function(response)
-                {
-
-                },
-                error : function(xhr,errmsg,err) {
-                    console.log(errmsg);
-                }
-            }
-        )
-    }
-
-    get_all(){
-        let csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
-        let brands = $.ajax(
-            {
-                type: 'get',
-                url: this.url,
-                headers: {'X-CSRFToken': csrf_token},
-                mode: 'same-origin',
-                async: false,
-                success : function(response)
-                {
-                    return response;
-                },
-                error : function(xhr,errmsg,err) {
-                    console.log(errmsg);
-                }
-            }
-        )
-
-        brands.responseJSON.forEach((brand) => {
-            this.collection.push(
-                new Brand(
-                    brand.name,
-                    brand.slug,
-                    brand.file
-                )
-            )
-        })
-    }
-}
-
+let repo = new IRepo(Brand, BRAND_URL, CSRF_TOKEN);
+console.log(repo.list());
 
 class BrandView{
     constructor() {
-        this.repository = new BrandRepository();
+        this.selector_id = "brand_selector";
+        this.form_id = "brand_form";
+        this.fields = ["name", "slug", "file"];
     }
+    // menu(brand_slug){
+    //     let menu = document.createElement("div");
+    //
+    //     let delete_el = document.createElement("button");
+    //     delete_el.innerText = "Удалить";
+    //     delete_el.onclick = function(){delete_brand(brand_slug)};
+    //
+    //     let edit_el = document.createElement("button");
+    //     edit_el.innerText = "Изменить";
+    //
+    //     let view_el = document.createElement('button');
+    //     view_el.innerText = "Посмотреть"
+    //
+    //     let create_el = document.createElement("button");
+    //     create_el.innerText = "Создать";
+    //
+    //     menu.insertAdjacentElement('beforeend', delete_el);
+    //     menu.insertAdjacentElement('beforeend', edit_el);
+    //     menu.insertAdjacentElement('beforeend', view_el);
+    //     menu.insertAdjacentElement('beforeend', create_el);
+    //
+    //     return menu
+    // }
     form(){
         let form = document.createElement('form');
-        form.id = "brand_form";
+        form.id = this.form_id;
 
-        let fields = ["name", "slug", "file"]
-
-        fields.forEach((field_name)=>{
+        this.fields.forEach((field_name)=>{
             let input_el = document.createElement('input');
             input_el.name = field_name;
             input_el.id = form.id + "_" + field_name
@@ -141,11 +58,60 @@ class BrandView{
 
         return form
     }
+    table_row(brand){
+        let row = document.createElement("tr");
+
+        let td = document.createElement("td");
+
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+
+        td.insertAdjacentElement("beforeend", checkbox);
+        row.insertAdjacentElement('beforeend', td);
+
+        this.fields.forEach((field)=>{
+            let td = document.createElement("td");
+            td.innerText = brand[field];
+            row.insertAdjacentElement('beforeend', td);
+        })
+
+        return row;
+    }
+    table() {
+        let table = document.createElement("table");
+
+        table.setAttribute('class', 'table');
+        table.style.color = "white";
+
+        let table_head = document.createElement("thead");
+        let table_head_row = document.createElement("tr");
+
+        let td = document.createElement("td");
+        table_head_row.insertAdjacentElement('beforeend', td);
+
+        this.fields.forEach((field_name)=>{
+            let td = document.createElement("td");
+            td.innerText = field_name;
+            table_head_row.insertAdjacentElement('beforeend', td);
+        })
+
+        table_head.insertAdjacentElement('beforeend', table_head_row);
+        table.insertAdjacentElement('beforeend', table_head)
+
+        let table_body = document.createElement("tbody");
+
+        repo.list().forEach((brand)=>{
+            table_body.insertAdjacentElement("beforeend", this.table_row(brand));
+        });
+
+        table.insertAdjacentElement('beforeend', table_body);
+
+        return table
+    }
     selector(){
         let select = document.createElement('select');
-        select.id = "brand_selector";
-        select.setAttribute('v-model', 'current_el');
-        this.repository.collection.forEach((brand)=>{
+        select.id = this.selector_id;
+        repo.list().forEach((brand)=>{
             let option = document.createElement('option');
             option.text = brand.name;
             option.value = brand.slug;

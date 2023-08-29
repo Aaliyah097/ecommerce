@@ -37,8 +37,6 @@
         {#favicon#}
         <link rel="shortcut icon" type="image/png" href="{% static 'img/logo.ico' %}" />
 
-        <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
-
         <script src="{% static 'js/dragndrop/lib.js' %}"></script>
         <script src="{% static 'js/dragndrop/DragManager.js' %}"></script>
         <script src="{% static 'js/dragndrop/DragAvatar.js' %}"></script>
@@ -55,6 +53,7 @@
         {% block page_content %}
           
         {% endblock %}
+        <script src="{% static 'js/manager.js' %}"></script>
         <script src="{% static 'js/brand/brand.js' %}"></script>
         <script src="{% static 'js/index.js' %}"></script>
 </body>
