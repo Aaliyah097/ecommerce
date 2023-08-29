@@ -4,6 +4,9 @@
 # DB Scheme
 ![sb_scheme](assets/db_scheme.png)
 
+# Component Diagram
+![component_diagram](assets/component_diagram.png)
+
 # Dependencies
 - Django v.4.*
 - DRF v.3.*
@@ -15,4 +18,5 @@
 - pip install -r requirements.txt
 - python manage.py makemigrations
 - python manage.py migrate
+- [optional] python mange.py createsuperuser (default: admin:admin)
 - python manage.py runserver
