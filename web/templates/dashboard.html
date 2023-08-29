@@ -5,6 +5,12 @@
 {% csrf_token %}
 {% block page_content %}
 <!-- 1-й уровень ! -->
+<div id="app">
+  {{ message }}
+</div>
+
+
+
 <div class="content_info">
   <div class="content_info__categories">
     <p class="content_info__categories__header">123</p>
@@ -41,10 +47,11 @@
     <ul id="tree"></ul>
   </div>
   <div class="content__categories">
-    <h2>123</h2>
+
+    <div id="form_category"></div>
+    <div id="selector_form" ></div>
   </div>
 </div>
-
 
 
 
