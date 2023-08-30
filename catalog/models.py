@@ -104,7 +104,7 @@ class Products(models.Model):
         verbose_name_plural = 'Товары'
         db_table = 'products'
 
-        unique_together = ('part_number', 'entities')
+        unique_together = ('part_number', 'brand')
 
 
 class Details(models.Model):
