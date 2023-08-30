@@ -57,14 +57,14 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(db_index=True, max_length=500, verbose_name='Название')),
                 ('part_number', models.CharField(db_index=True, max_length=50, verbose_name='Парт. номер')),
                 ('price', models.FloatField(default=0, verbose_name='Цена')),
-                ('brand', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='products_by_brand', to='catalog.brands', to_field='name', verbose_name='Производитель')),
+                ('entities', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='products_by_brand', to='catalog.brands', to_field='name', verbose_name='Производитель')),
                 ('category', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='products_by_category', to='catalog.categories', verbose_name='Категория')),
             ],
             options={
                 'verbose_name': 'Товар',
                 'verbose_name_plural': 'Товары',
                 'db_table': 'products',
-                'unique_together': {('part_number', 'brand')},
+                'unique_together': {('part_number', 'entities')},
             },
         ),
         migrations.CreateModel(

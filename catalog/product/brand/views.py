@@ -7,7 +7,7 @@ from catalog.product.brand.repository import (
 
 
 class BrandView(ModelViewSet):
-    """product-brand view"""
+    """product-entities view"""
     queryset = BrandRepository.get_queryset()
     serializer_class = BrandSerializer
     filterset_class = BrandFilter

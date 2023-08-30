@@ -5,7 +5,11 @@
 *
 * const CSRF_TOKEN = $('input[name="csrfmiddlewaretoken"]').val();
 *
-* class Brand extends IModel{static fields = ['name', 'slug', 'file'];}
+* class Brand extends IModel{
+*   static fields = ['name', 'slug', 'file'];
+*   pk_field = 'slug';
+*   display_field = 'name';
+* }
 *
 * let repo = new IRepo(Brand, BRAND_URL, CSRF_TOKEN);
 *
@@ -18,13 +22,20 @@
 
 /*
 * @property {Array[string]} fields
+* @property {String} pk_field
+* @property {String} display_field
 */
 class IModel{
     static fields = [];
+    static pk_field = null;
+    static display_field = null;
+
     constructor(...args) {
+        let fields = this.constructor.fields.sort();
+
         let counter = 0;
         args.forEach((arg)=>{
-            this[this.constructor.fields[counter]] = arg;
+            this[fields[counter]] = arg;
             counter += 1;
         })
     }
@@ -38,7 +49,6 @@ class IModel{
 class IRepo{
     constructor(model, base_url, token) {
         this.model = model;
-        this.fields = model.fields;
         this.base_url = base_url;
         this.token = token;
     }
@@ -144,9 +154,12 @@ class IRepo{
         let collection = [];
 
         models.responseJSON.forEach((model) => {
+            let sorted_keys = Object.keys(model).sort();
+            let sorted_values = sorted_keys.map(key => model[key]);
+
             collection.push(
                 new this.model(
-                    ...Object.values(model)
+                    ...sorted_values
                 )
             )
         })
@@ -174,6 +187,108 @@ class IRepo{
             }
         )
 
-        return new this.model(...Object.values(model))
+        return new this.model(...Object.values(model).sort())
+    }
+}
+
+/*
+* @param {IRepo} repo
+* */
+class IView{
+    constructor(repo) {
+        this.repo = repo;
+        this.selector_id = String(repo.model.name) + "_selector";
+        this.form_id = String(repo.model.name) + "_form";
+        this.table_id = String(repo.model.name) + "_table";
+    }
+    selector(){
+        let select = document.createElement("select");
+        select.id = this.selector_id;
+
+        this.repo.list().forEach((model)=>{
+            let option = document.createElement("option");
+            option.text = model[this.repo.model.display_field];
+            option.value = model[this.repo.model.pk_field];
+            select.appendChild(option)
+        })
+
+        return select;
+    }
+    form(){
+        let form = document.createElement("form");
+        form.setAttribute('id', this.form_id);
+
+        this.repo.model.fields.forEach(field_name=>{
+            let span = document.createElement("span");
+            span.textContent = field_name;
+
+            let input = document.createElement("input");
+            input.setAttribute('type', 'text');
+            input.name = field_name;
+
+            form.appendChild(span);
+            form.appendChild(input);
+        })
+
+        let button = document.createElement("button");
+        button.setAttribute('type', 'button');
+        button.textContent = "Подтвердить";
+        button.setAttribute("class", "btn btn-success");
+
+        form.appendChild(button);
+
+        return form
+    }
+    table_row(model){
+        // row
+        let row = document.createElement("tr");
+        let td = document.createElement("td");
+
+        // checkbox
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        td.appendChild(checkbox);
+        row.appendChild(td);
+
+        // content
+        this.repo.model.fields.forEach((field)=>{
+            let td = document.createElement("td");
+            td.textContent = model[field];
+            row.appendChild(td);
+        })
+
+        return row;
+    }
+    table() {
+        if (document.getElementById(this.table_id)){
+            throw new Error(`element with id: ${this.table_id} already exists`);
+        }
+        // table
+        let table = document.createElement("table");
+        table.setAttribute('id', this.table_id);
+        table.setAttribute('class', 'table');
+
+        let thead = table.createTHead();
+        let headerRow = thead.insertRow();
+
+        //checkbox
+        let th = document.createElement("th");
+        headerRow.appendChild(th);
+
+        // header
+        this.repo.model.fields.sort().forEach(field_name=>{
+            let th = document.createElement("th");
+            th.textContent = field_name;
+            headerRow.appendChild(th);
+        })
+
+        // body
+        let tbody = table.createTBody();
+
+        this.repo.list().forEach((model)=>{
+            tbody.appendChild(this.table_row(model));
+        });
+
+        return table
     }
 }
