@@ -5,3 +5,7 @@ from django.shortcuts import render
 
 def index(request):
     return render(request, 'index.html', {})
+
+
+def brands(request):
+    return render(request, 'entities/brands.html', {})
