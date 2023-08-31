@@ -24,7 +24,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'catalog',
-    'web',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
@@ -43,7 +43,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'web/templates',
+            BASE_DIR / 'dashboard/templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {

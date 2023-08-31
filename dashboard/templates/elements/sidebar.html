@@ -1,0 +1,38 @@
+<div style="display: flex">
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'index' %}">E-com</a>
+        </div>
+
+        <ul class="list-unstyled components">
+            <p>Entities</p>
+            <li class="active" name="brands">
+                <a href="{% url 'brands' %}">Brands</a>
+            </li>
+        </ul>
+    </nav>
+    <button id="sidebarCollapse"> > </button>
+</div>
+
+<script>
+    $(document).ready(function() {
+        let lis = document.querySelectorAll("#sidebar li");
+        let url = window.location.href.split('/');
+        let link = url[url.length - 1];
+
+        lis.forEach(li => {
+            if (li.getAttribute('name') === link){
+                li.setAttribute('class', 'active');
+            }
+            else{
+                li.removeAttribute('class')
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    });
+</script>

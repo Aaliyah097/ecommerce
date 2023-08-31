@@ -1,3 +1,4 @@
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from drf_yasg.views import get_schema_view
@@ -5,8 +6,8 @@ from django.views.generic import TemplateView
 from drf_yasg import openapi
 
 from catalog.urls import urlpatterns as catalog_urls
-from web import urls as web_urls
-
+from dashboard import urls as web_urls
+from ecommerce import settings
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -22,7 +23,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('catalog/', include((catalog_urls, 'catalog'), namespace='catalog')),
-    path('web/', include(web_urls)),
+    path('dashboard/', include(web_urls)),
 
     path(
         'swagger/',
@@ -33,3 +34,7 @@ urlpatterns = [
         name='swagger'),
     path('swagger/<str:format>', schema_view.without_ui(cache_timeout=0), name='schema-json'),
 ]
+
+if bool(settings.DEBUG):
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

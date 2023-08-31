@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}E-com | Brands{% endblock %}
+
+{% block page_content %}
+    <div class="row">
+        <div class="col-md-9">
+            <h3>View all Brands</h3>
+            <div id="table"></div>
+        </div>
+        <div class="col-md-3">
+            <h3>Create new Brand</h3>
+            <div id="form"></div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/entities/brand.js' %}"></script>
+
+    <link rel="stylesheet" href="{% static 'css/entities.css' %}">
+
+    <script>
+        document.getElementById("table").appendChild(
+            brand_view.table()
+        );
+        document.getElementById("form").appendChild(
+            brand_view.form()
+        );
+
+        let brand_manager = new IManager(brand_view);
+        brand_manager.listen_form();
+    </script>
+{% endblock %}

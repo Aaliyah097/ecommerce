@@ -27,13 +27,13 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous">
     </script>
-    {#google font Montserrat Thin 400#}
+    {#google font Quicksand Thin 400#}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200&family=Montserrat:wght@400&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
     {#css#}
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
     {#favicon#}
     <link rel="shortcut icon" type="image/png" href="{% static 'img/logo.ico' %}" />
 
@@ -50,13 +50,30 @@
 </head>
 <body>
 
+<div class="modal fade" id="entity_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            {#modal header#}
+            <div class="modal-header" id="entity_modal_header">
+            </div>
+            {#modal body#}
+            <div class="modal-body" id="entity_modal_body">
+            </div>
+            {#modal footer#}
+            <div class="modal-footer" id="entity_modal_footer">
+            </div>
+        </div>
+    </div>
+</div>
+
 {% csrf_token %}
-<div style="display: flex">
-    {% include 'navbar/navbar.html' %}
+<div class="wrapper">
+    {% include 'elements/sidebar.html' %}
+    <div id="content">
+        {% block page_content %}
 
-    {% block page_content %}
-
-    {% endblock %}
+        {% endblock %}
+    </div>
 </div>
 
 <script src="{% static 'js/index.js' %}"></script>

@@ -1,3 +1,4 @@
+from rest_framework.parsers import MultiPartParser, FileUploadParser, JSONParser, FormParser
 from rest_framework.viewsets import ModelViewSet
 from catalog.product.brand.repository import (
     BrandRepository,
@@ -11,3 +12,4 @@ class BrandView(ModelViewSet):
     queryset = BrandRepository.get_queryset()
     serializer_class = BrandSerializer
     filterset_class = BrandFilter
+    parser_classes = [FormParser, MultiPartParser, ]

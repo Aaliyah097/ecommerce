@@ -3,7 +3,11 @@ const CSRF_TOKEN = $('input[name="csrfmiddlewaretoken"]').val();
 
 
 class Brand extends IModel{
-    static fields = ['slug', 'name', 'file']
+    static fields = {
+        'slug': String.name,
+        'name': String.name,
+        'file': Image.name
+    }
     static pk_field = 'slug';
     static display_field = 'name';
 }
