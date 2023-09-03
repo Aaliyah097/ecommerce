@@ -1,6 +1,6 @@
 from catalog.models import Products
 from django.db.models import QuerySet
-from rest_framework.serializers import ModelSerializer, StringRelatedField
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from django_filters import FilterSet
 
 from catalog.product.image.repository import ImageSerializer
@@ -11,8 +11,11 @@ from catalog.product.brand.repository import BrandSerializer
 class ProductSerializer(ModelSerializer):
     specs = SpecsSerializer(many=True, read_only=True)
     images = ImageSerializer(many=True, read_only=True)
-    category = StringRelatedField(many=False, read_only=True)
-    brand = BrandSerializer(many=False, read_only=True)
+    brand_info = SerializerMethodField(read_only=True)
+
+    @staticmethod
+    def get_brand_info(obj):
+        return BrandSerializer(obj.brand).data
 
     class Meta:
         model = Products

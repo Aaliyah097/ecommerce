@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
@@ -21,10 +22,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'haystack',
+    'django_elasticsearch_dsl',
+    'rangefilter',
+    'mptt',
+    'django_extensions',
     'django_filters',
     'rest_framework',
+
     'catalog',
-    'dashboard',
+    'web',
 ]
 
 MIDDLEWARE = [
@@ -43,7 +50,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'dashboard/templates',
+            BASE_DIR / 'web/templates',
+            BASE_DIR / 'catalog/templates',
+            BASE_DIR / 'ecommerce/templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -92,10 +101,30 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
     ]
+}
+
+# elasticsearch
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': f"{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}"
+    },
+}
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
+# haystack
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch7_backend.Elasticsearch7SearchEngine',
+        'URL': f"http://{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}/",
+        'INDEX_NAME': 'haystack',
+    },
 }
 
 # Internationalization

@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 from drf_yasg import openapi
 
 from catalog.urls import urlpatterns as catalog_urls
-from dashboard import urls as web_urls
+from web import urls as web_urls
 from ecommerce import settings
 
 schema_view = get_schema_view(
@@ -21,14 +21,14 @@ schema_view = get_schema_view(
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('dashboard/', admin.site.urls),
     path('catalog/', include((catalog_urls, 'catalog'), namespace='catalog')),
-    path('dashboard/', include(web_urls)),
+    path('web/', include(web_urls)),
 
     path(
         'swagger/',
         TemplateView.as_view(
-            template_name='swagger.html',
+            template_name='pages/swagger.html',
             extra_context={'schema_url': 'openapi-schema'}
         ),
         name='swagger'),

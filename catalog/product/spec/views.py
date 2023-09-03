@@ -4,9 +4,10 @@ from catalog.product.spec.repository import (
     SpecsSerializer,
     SpecsFilter
 )
+from catalog.utils import FormViewMixin
 
 
-class SpecsView(ModelViewSet):
+class SpecsView(ModelViewSet, FormViewMixin):
     """product-spec view"""
     queryset = SpecsRepository.get_queryset()
     serializer_class = SpecsSerializer

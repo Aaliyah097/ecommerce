@@ -4,9 +4,10 @@ from catalog.product.image.repository import (
     ImageSerializer,
     ImageFilter
 )
+from catalog.utils import FormViewMixin
 
 
-class ImageView(ModelViewSet):
+class ImageView(ModelViewSet, FormViewMixin):
     """product-images view"""
     queryset = ImageRepository.get_queryset()
     serializer_class = ImageSerializer

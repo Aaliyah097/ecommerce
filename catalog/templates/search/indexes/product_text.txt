@@ -1,0 +1,7 @@
+{{ object.name }}
+{{ object.brand.name }}
+{{ object.part_number }}
+{{ object.category.name }}
+{% for value in object.specs.all %}
+    {{ value }}
+{% endfor %}

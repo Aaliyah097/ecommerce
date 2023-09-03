@@ -1,18 +1,22 @@
-from catalog.category.routes import category_router
-from catalog.product.routes import product_router
-from catalog.product.brand.routes import brand_router
-from catalog.product.image.routes import image_router
-from catalog.product.spec.routes import spec_router
-from catalog.product.spec.detail.routes import detail_router
+from catalog.category.views import CategoryView
+from catalog.product.views import ProductView
+from catalog.product.brand.views import BrandView
+from catalog.product.image.views import ImageView
+from catalog.product.spec.views import SpecsView
+from catalog.product.spec.detail.views import DetailView
 
 from django.urls import path, include
 
-# include((catalog_urls, 'catalog'), namespace='catalog')
+from catalog.utils import get_router
+
+
 urlpatterns = [
-    path('categories/', include(category_router.urls)),
-    path('products/', include(product_router.urls)),
-    path('brands/', include(brand_router.urls)),
-    path('images/', include(image_router.urls)),
-    path('specs/', include(spec_router.urls)),
-    path('details/', include(detail_router.urls)),
+    path('categories/', include(get_router('', CategoryView))),
+    path('products/', include(get_router('', ProductView))),
+    path('brands/', include(get_router('', BrandView))),
+    path('images/', include(get_router('', ImageView))),
+    path('specs/', include(get_router('', SpecsView))),
+    path('details/', include(get_router('', DetailView))),
+
+    path('search/', include('haystack.urls')),
 ]

@@ -1,24 +1,28 @@
 from django.db import models
-
-# Create your models here.
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.urls import reverse
 
+from mptt.models import MPTTModel, TreeForeignKey
 
-class Categories(models.Model):
+
+class Categories(MPTTModel):
     name = models.CharField(verbose_name='Название',
                             max_length=50,
                             unique=True)
     slug = models.SlugField(verbose_name='Путь',
                             max_length=50,
-                            null=False,
                             primary_key=True,
-                            unique=True)
-    parent = models.ForeignKey('Categories', verbose_name='Родитель',
-                               on_delete=models.SET_NULL,
-                               related_name='children',
-                               null=True, blank=True)
+                            unique=True,
+                            null=False,)
+    parent: 'Categories' = TreeForeignKey('self',
+                                          verbose_name='Родитель',
+                                          on_delete=models.SET_NULL,
+                                          related_name='children',
+                                          null=True, blank=True)
+
+    def get_absolute_url(self):
+        return reverse('catalog:categories-detail', kwargs={'pk': self.slug})
 
     def __str__(self):
         return self.name
@@ -31,9 +35,12 @@ class Categories(models.Model):
             slug_path.insert(0, current_parent.slug)
             current_parent = current_parent.parent
 
-        self.slug = '/'.join(slug_path)
+        self.slug = '-'.join(slug_path)
 
         super(Categories, self).save(*args, **kwargs)
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
 
     class Meta:
         verbose_name = 'Категория'
@@ -88,9 +95,8 @@ class Products(models.Model):
                                    max_length=50,
                                    db_index=True)
     brand = models.ForeignKey(Brands,
-                              to_field='name',
-                              null=True,
                               verbose_name='Производитель',
+                              null=True,
                               on_delete=models.SET_NULL,
                               related_name='products_by_brand')
     price = models.FloatField(verbose_name='Цена',
@@ -110,8 +116,7 @@ class Products(models.Model):
 class Details(models.Model):
     name = models.CharField(verbose_name='Название',
                             max_length=50,
-                            unique=True,
-                            primary_key=True)
+                            unique=True)
 
     def __str__(self):
         return self.name
@@ -124,14 +129,14 @@ class Details(models.Model):
 
 class Specs(models.Model):
     detail = models.ForeignKey(Details,
-                               to_field='name',
                                verbose_name='Характеристика',
                                on_delete=models.CASCADE,
-                               related_name='in_products_as_detail')
+                               related_name='in_specs_as_detail')
     product = models.ForeignKey(Products,
                                 verbose_name='Товар',
                                 on_delete=models.CASCADE,
-                                related_name='specs')
+                                related_name='specs',
+                                null=True, default=None)
     value = models.TextField(verbose_name='Значение', null=True)
 
     def __str__(self):

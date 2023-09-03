@@ -25,6 +25,7 @@
 * @property {String} pk_field
 * @property {String} display_field
 */
+
 class IModel{
     static fields = {};
     static pk_field = null;

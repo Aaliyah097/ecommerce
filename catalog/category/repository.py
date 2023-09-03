@@ -34,7 +34,7 @@ class CategoryRepository:
             return asdict(categories)
 
     @cache
-    def list(self) -> list[Category]:
+    def tree(self) -> list[Category]:
         base_categories = Categories.objects.filter(parent__isnull=True)
         return [
             Category(
@@ -57,11 +57,3 @@ class CategoryRepository:
             )
             for child in children
         ]
-
-    @cache
-    def get_parent(self, category: Categories) -> Category | None:
-        return Category(
-            name=category.parent.name,
-            slug=category.parent.slug,
-            children=self.get_children(category.parent)
-        ) if category.parent else None

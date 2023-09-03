@@ -1,7 +1,6 @@
 from django.test import TestCase
 from catalog.models import *
 from catalog.category.repository import CategoryRepository
-from catalog.category.entity import Category
 
 
 class TestCategories(TestCase):
@@ -20,14 +19,11 @@ class TestCategories(TestCase):
     def test_tree(self):
         """test tree"""
 
-        tree = self.repo.list()
-        parent = self.repo.get_parent(self.cat3)
+        tree = self.repo.tree()
         children = self.repo.get_children(self.cat2)
 
         assert len(tree) == 1 and len(tree[0].children) == 1 and len(tree[0].children[0].children) == 1
-        assert isinstance(parent, Category) and len(parent.children) == 1
         assert len(children) == 1
 
-        print(self.repo.list())
-        print(parent)
+        print(tree)
         print(children)

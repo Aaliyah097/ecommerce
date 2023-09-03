@@ -4,9 +4,10 @@ from catalog.product.spec.detail.repository import (
     DetailSerializer,
     DetailFilter
 )
+from catalog.utils import FormViewMixin
 
 
-class DetailView(ModelViewSet):
+class DetailView(ModelViewSet, FormViewMixin):
     """spec view"""
     queryset = DetailRepository.get_queryset()
     serializer_class = DetailSerializer
