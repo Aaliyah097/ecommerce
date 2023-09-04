@@ -1,51 +1,198 @@
 @font-face {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-family: 'Quicksand', sans-serif;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Quicksand', sans-serif;
 }
 
-:root{
-    --white_color: #ffffff;
+:root {
+  --white_color: #ffffff;
+  --blue_color: #349BD4;
+  --lightblue_color: #5eb7e7;
+  --black_color: #1f1f1f;
 }
 
-*{
-    margin: 0;
-    padding: 0
+* {
+  margin: 0;
+  padding: 0
 }
 
-body{
-    background-color: var(--white_color);
-    font-family: 'IBM Plex Sans', sans-serif;
+body {
+  background-color: var(--white_color);
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
-main{
-    position: relative;
-    width: 70%;
-    left: 50%;
-    transform: translate(-50%, 0);
-    min-height: 100vh;
+main {
+  position: relative;
+  width: 70%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  min-height: 100vh;
 }
 
-.navbar{
-    display: flex;
-    justify-content: space-between;
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* border-bottom: 2px solid grey; */
 }
 
-.logo{
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background: lightgray; */
+  /* margin-right: 2%; */
 }
 
-.logo .image img{
-    /*width: 32px;*/
-    /*height: 32px;*/
+
+
+.pages {
+  /* background: rgb(158, 100, 100); */
+  margin-left: 5%;
+
 }
 
-.logo .brand-text{
-    /*position: absolute;*/
-    /*top: 15%;*/
-    /*left: 100%;*/
-    white-space: nowrap;
-    color: #89C5E6;
-    font-weight: bold;
+.search {
+  width: 55%;
+  flex: 3;
+}
+
+.logo,
+.catalog,
+.pages {
+  flex: 1;
+}
+
+.logo .brand-text {
+  /*position: absolute;*/
+  /*top: 15%;*/
+  /*left: 100%;*/
+  font-size: 15px;
+  padding-top: 5%;
+  white-space: nowrap;
+  color: var(--blue_color);
+  font-weight: 600;
+}
+
+.btn-gamma-info {
+  display: flex;
+  background: var(--blue_color);
+  padding: 10px 2vh;
+  color: rgb(255, 255, 255);
+  font-weight: 400;
+  border: none;
+  border-radius: 5px;
+  position: relative;
+  white-space: nowrap;
+  transition: 0.4s;
+}
+
+.btn-gamma-info:hover {
+  background: var(--lightblue_color);
+}
+
+.pages__link{
+  color: var(--black_color);
+  text-decoration: none;
+  font-weight: bold;
+  flex: 1;
+  margin-right: 5%;
+  padding: 5% 0;
+}
+
+.active_link_button{
+  border-bottom:2px solid var(--blue_color) !important;
+
+}
+
+
+#nav-icon3 {
+  width: 30px;
+  height: 22px;
+  position: relative;
+  margin: 0 20px 0 0;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: .5s ease-in-out;
+  -moz-transition: .5s ease-in-out;
+  -o-transition: .5s ease-in-out;
+  transition: .5s ease-in-out;
+  cursor: pointer;
+}
+
+#nav-icon3 span {
+  display: block;
+  position: absolute;
+  height: 4px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 4px;
+  opacity: 1;
+  left: 0;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: .25s ease-in-out;
+  -moz-transition: .25s ease-in-out;
+  -o-transition: .25s ease-in-out;
+  transition: .25s ease-in-out;
+}
+
+
+#nav-icon3 span:nth-child(1) {
+  top: 0px;
+}
+
+#nav-icon3 span:nth-child(2),
+#nav-icon3 span:nth-child(3) {
+  top: 9px;
+}
+
+#nav-icon3 span:nth-child(4) {
+  top: 18px;
+}
+
+#nav-icon3.open span:nth-child(1) {
+  top: 9px;
+  width: 0%;
+  left: 50%;
+}
+
+#nav-icon3.open span:nth-child(2) {
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+#nav-icon3.open span:nth-child(3) {
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+
+#nav-icon3.open span:nth-child(4) {
+  top: 9px;
+  width: 0%;
+  left: 50%;
+}
+
+
+/* БЛОК ПОИСКА */
+.search_block{
+  display: flex;
+}
+.search_block>button{
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+#search_q {
+  width: 100%;
+  border: 2px solid var(--blue_color);
+  padding: 0.7vh;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
