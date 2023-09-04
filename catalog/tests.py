@@ -1,6 +1,7 @@
 from django.test import TestCase
 from catalog.models import *
 from catalog.category.repository import CategoryRepository
+from catalog.utils import check_spell
 
 
 class TestCategories(TestCase):
@@ -27,3 +28,8 @@ class TestCategories(TestCase):
 
         print(tree)
         print(children)
+
+
+class TestUtils(TestCase):
+    words = 'lenovo чрный 8gb'
+    print(check_spell(words))

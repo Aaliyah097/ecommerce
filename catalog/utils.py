@@ -1,8 +1,5 @@
-import django.db.models
-from rest_framework import renderers
-from rest_framework.decorators import action
-from rest_framework.response import Response
 from rest_framework.routers import SimpleRouter
+from spellchecker import SpellChecker
 
 
 def get_router(name: str, view) -> list:
@@ -11,28 +8,41 @@ def get_router(name: str, view) -> list:
     return r.urls
 
 
-class FormViewMixin:
-    queryset: django.db.models.QuerySet = None
-    template_name = 'form.html'
-    serializer_class = None
+def check_spell(words: str) -> str:
+    spell = SpellChecker(language=['ru', 'en'], distance=1)
 
-    @action(renderer_classes=[renderers.TemplateHTMLRenderer], detail=False, url_path='form')
-    def form_create(self, request):
-        return Response(self.get_context())
+    words = remove_spaces(words)
+    misspelled = spell.unknown(words.split(' ')).union(set([w.lower() for w in words.split(' ')]))
 
-    @action(renderer_classes=[renderers.TemplateHTMLRenderer], detail=True, url_path='form')
-    def form_edit(self, request, pk):
-        return Response(self.get_context(pk))
+    result = []
+    for word in misspelled:
+        correction = spell.correction(word)
+        result.append(correction if correction else word)
 
-    def get_context(self, pk=None) -> dict:
-        if pk:
-            model = self.queryset.get(pk=pk)
-            serializer = self.serializer_class(model)
-        else:
-            serializer = self.serializer_class()
-
-        return {
-            'form': serializer,
-        }
+    return ' '.join(result)
 
 
+def remove_spaces(value: str) -> str:
+    value = str(value)
+    splitted_value = list(value)
+
+    pass_begin = False
+    pass_end = False
+
+    for _ in splitted_value:
+        if not pass_begin:
+            if splitted_value[0] == " ":
+                del splitted_value[0]
+            else:
+                pass_begin = True
+
+        if not pass_end:
+            if splitted_value[-1] == " ":
+                del splitted_value[-1]
+            else:
+                pass_end = True
+
+        if pass_end and pass_begin:
+            break
+
+    return ''.join(splitted_value)

@@ -1,13 +1,6 @@
 {% extends 'pages/base.html' %}
 {% load static %}
-{% block page_title %}E-com{% endblock %}
 
 {% csrf_token %}
 {% block page_content %}
-
-    <form action="/catalog/search" method="get">
-        <input name="q" type="text" />
-        <input type="submit" />
-    </form>
-
 {% endblock %}

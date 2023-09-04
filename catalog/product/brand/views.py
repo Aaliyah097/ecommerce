@@ -4,10 +4,9 @@ from catalog.product.brand.repository import (
     BrandSerializer,
     BrandFilter
 )
-from catalog.utils import FormViewMixin
 
 
-class BrandView(ModelViewSet, FormViewMixin):
+class BrandView(ModelViewSet):
     """product-entities view"""
     queryset = BrandRepository.get_queryset()
     serializer_class = BrandSerializer

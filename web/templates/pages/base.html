@@ -7,12 +7,16 @@
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
     {#page title#}
     <title>
-        {% block page_title %}E-com{% endblock %}
+        {% block page_title %}Gamma Group - Supplier of network and server equipments{% endblock %}
     </title>
     {#jquery#}
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"
             integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous">
     </script>
+    {% comment %}jquery autocomplete{% endcomment %}
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     {#ajax#}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -27,13 +31,12 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous">
     </script>
-    {#google font Quicksand Thin 400#}
+    {#google font #}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300&family=Quicksand&display=swap" rel="stylesheet">
     {#css#}
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
-    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
     {#favicon#}
     <link rel="shortcut icon" type="image/png" href="{% static 'img/logo.ico' %}" />
 
@@ -46,34 +49,20 @@
     <script src="{% static 'js/dragndrop/TreeDragZone.js' %}"></script>
     <script src="{% static 'js/dragndrop/TreeDropTarget.js' %}"></script>
 
-    <script src="{% static 'js/manager.js' %}"></script>
 </head>
 <body>
 
-<div class="modal fade" id="entity_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            {#modal header#}
-            <div class="modal-header" id="entity_modal_header">
-            </div>
-            {#modal body#}
-            <div class="modal-body" id="entity_modal_body">
-            </div>
-            {#modal footer#}
-            <div class="modal-footer" id="entity_modal_footer">
-            </div>
-        </div>
-    </div>
-</div>
+{% include 'elements/modal.html' %}
 
 {% csrf_token %}
-<div class="wrapper">
-    <div id="content">
-        {% block page_content %}
 
-        {% endblock %}
-    </div>
-</div>
+<main>
+    {% include 'elements/navbar.html' %}
+    {% block page_content %}
+
+    {% endblock %}
+</main>
+
 
 <script src="{% static 'js/index.js' %}"></script>
 </body>

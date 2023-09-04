@@ -1,51 +1,51 @@
-body{
-    background-color: #fafafa;
+@font-face {
+    font-family: 'IBM Plex Sans', sans-serif;
     font-family: 'Quicksand', sans-serif;
 }
 
-#content{
-    margin-left: 1%;
+:root{
+    --white_color: #ffffff;
 }
 
-.wrapper {
-    display: flex;
-    width: 100%;
-    align-items: stretch;
+*{
+    margin: 0;
+    padding: 0
 }
 
-.wrapper ul ul a {
-    font-size: 0.9em !important;
-    padding-left: 30px !important;
-    background: #6d7fcc;
+body{
+    background-color: var(--white_color);
+    font-family: 'IBM Plex Sans', sans-serif;
 }
 
-.wrapper ul.CTAs {
-    padding: 20px;
-}
-
-.wrapper ul.CTAs a {
-    text-align: center;
-    font-size: 0.9em !important;
-    display: block;
-    border-radius: 5px;
-    margin-bottom: 5px;
-}
-
-.wrapper a.download {
-    background: #fff;
-    color: #7386D5;
-}
-
-.wrapper a.article,
-a.article:hover {
-    background: #6d7fcc !important;
-    color: #fff !important;
-}
-
-
-.wrapper #content {
-    width: 100%;
-    padding: 20px;
+main{
+    position: relative;
+    width: 70%;
+    left: 50%;
+    transform: translate(-50%, 0);
     min-height: 100vh;
-    transition: all 0.3s;
+}
+
+.navbar{
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo .image img{
+    /*width: 32px;*/
+    /*height: 32px;*/
+}
+
+.logo .brand-text{
+    /*position: absolute;*/
+    /*top: 15%;*/
+    /*left: 100%;*/
+    white-space: nowrap;
+    color: #89C5E6;
+    font-weight: bold;
 }

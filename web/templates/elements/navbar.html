@@ -1,0 +1,15 @@
+{% load static %}
+
+<div class="navbar">
+    <div class="logo">
+        <div class="image">
+            <img src="{% static 'img/logo.png' %}" width="32" height="32" alt="logo"/>
+        </div>
+        <div class="brand">
+            <h5 class="brand-text">GAMMA GROUP</h5>
+        </div>
+    </div>
+    <div class="search">
+        {% include 'components/products_search.html' %}
+    </div>
+</div>

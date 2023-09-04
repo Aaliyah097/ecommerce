@@ -101,6 +101,10 @@ class Products(models.Model):
                               related_name='products_by_brand')
     price = models.FloatField(verbose_name='Цена',
                               default=0)
+    description = models.TextField(verbose_name='Описание',
+                                   default=None,
+                                   blank=True,
+                                   null=True)
 
     def __str__(self):
         return self.name

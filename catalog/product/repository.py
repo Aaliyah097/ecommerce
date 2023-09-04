@@ -1,11 +1,14 @@
+import django.forms.widgets
+
 from catalog.models import Products
 from django.db.models import QuerySet
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
-from django_filters import FilterSet
+import django_filters
+from django.forms import widgets
 
 from catalog.product.image.repository import ImageSerializer
 from catalog.product.spec.repository import SpecsSerializer
-from catalog.product.brand.repository import BrandSerializer
+from catalog.product.brand.repository import BrandSerializer, Brands
 
 
 class ProductSerializer(ModelSerializer):
@@ -22,10 +25,10 @@ class ProductSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class ProductFilter(FilterSet):
+class ProductFilter(django_filters.FilterSet):
     class Meta:
         model = Products
-        fields = '__all__'
+        exclude = '__all__'
 
 
 class ProductRepository:

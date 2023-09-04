@@ -17,6 +17,4 @@ urlpatterns = [
     path('images/', include(get_router('', ImageView))),
     path('specs/', include(get_router('', SpecsView))),
     path('details/', include(get_router('', DetailView))),
-
-    path('search/', include('haystack.urls')),
 ]

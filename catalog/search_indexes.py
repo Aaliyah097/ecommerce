@@ -1,11 +1,11 @@
-import datetime
 from haystack import indexes
-from catalog.models import Products, Brands, Specs, Details
+from catalog.models import Products
 
 
 class ProductIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True, template_name='search/indexes/product_text.txt')
+    text = indexes.EdgeNgramField(document=True, use_template=True, template_name='search/indexes/product_text.txt')
     name = indexes.CharField(model_attr='name')
+    name_auto = indexes.EdgeNgramField(model_attr='name')
     part_number = indexes.CharField(model_attr='part_number')
     brand = indexes.CharField(model_attr='brand__name')
     category = indexes.CharField(model_attr='category__name')

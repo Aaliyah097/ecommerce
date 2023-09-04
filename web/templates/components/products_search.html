@@ -1,0 +1,19 @@
+<form action="{% url 'catalog:products-search' %}" method="GET">
+    <label for="search_q">Я ищу</label>
+    <input id="search_q" type="text" name="q" />
+    <button type="button">Search</button>
+</form>
+<div id="products"></div>
+
+<script>
+
+    $(function() {
+        $("#search_q").autocomplete({
+            source: "/catalog/products/autocomplete/",
+            minLength: 2, // Минимальная длина ввода перед началом автодополнения
+            delay: 200, // Задержка перед отправкой запроса на сервер
+            appendTo: "#products",
+        });
+    });
+
+</script>
