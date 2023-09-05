@@ -1,4 +1,7 @@
+from django import forms
 from django.contrib import admin
+from django.forms import BaseInlineFormSet
+
 from catalog.models import *
 
 from mptt.admin import DraggableMPTTAdmin, TreeRelatedFieldListFilter
@@ -19,9 +22,6 @@ class CategoriesAdmin(DraggableMPTTAdmin):
     )
     search_fields = ('name', )
     search_help_text = 'Поиск по Заголовку'
-
-    list_display_links = ['slug', ]
-    list_editable = ['name', ]
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -67,7 +67,7 @@ class ImagesAdmin(admin.TabularInline):
     model = Images
 
 
-class ProductDetailsAdmin(admin.TabularInline):
+class SpecsAdmin(admin.TabularInline):
     model = Specs
 
 
@@ -76,7 +76,7 @@ class ProductsAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Products._meta.fields]
     list_editable = ['part_number', 'price', 'category', 'name', 'brand']
     inlines = [
-        ProductDetailsAdmin,
+        SpecsAdmin,
         ImagesAdmin
     ]
     search_fields = ('name', 'part_number')

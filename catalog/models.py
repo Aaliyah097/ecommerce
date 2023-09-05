@@ -6,10 +6,23 @@ from django.urls import reverse
 from mptt.models import MPTTModel, TreeForeignKey
 
 
-class Categories(MPTTModel):
+class Details(models.Model):
     name = models.CharField(verbose_name='Название',
                             max_length=50,
                             unique=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Свойство'
+        verbose_name_plural = 'Свойства'
+        db_table = 'details'
+
+
+class Categories(MPTTModel):
+    name = models.CharField(verbose_name='Название',
+                            max_length=50)
     slug = models.SlugField(verbose_name='Путь',
                             max_length=50,
                             primary_key=True,
@@ -20,6 +33,10 @@ class Categories(MPTTModel):
                                           on_delete=models.SET_NULL,
                                           related_name='children',
                                           null=True, blank=True)
+    file = models.ImageField(verbose_name='Лого',
+                             upload_to='categories/',
+                             null=True,
+                             blank=True)
 
     def get_absolute_url(self):
         return reverse('catalog:categories-detail', kwargs={'pk': self.slug})
@@ -47,6 +64,14 @@ class Categories(MPTTModel):
         verbose_name_plural = 'Категории'
         db_table = 'categories'
         unique_together = ('name', 'parent')
+
+
+@receiver(post_delete, sender=Categories)
+def delete_categories_file(sender, instance, **kwargs):
+    try:
+        instance.file.delete(False)
+    except AttributeError:
+        pass
 
 
 class Brands(models.Model):
@@ -117,20 +142,6 @@ class Products(models.Model):
         unique_together = ('part_number', 'brand')
 
 
-class Details(models.Model):
-    name = models.CharField(verbose_name='Название',
-                            max_length=50,
-                            unique=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'Свойство'
-        verbose_name_plural = 'Свойства'
-        db_table = 'details'
-
-
 class Specs(models.Model):
     detail = models.ForeignKey(Details,
                                verbose_name='Характеристика',
@@ -144,7 +155,7 @@ class Specs(models.Model):
     value = models.TextField(verbose_name='Значение', null=True)
 
     def __str__(self):
-        return f"{self.detail}: {self.value}"
+        return self.value
 
     class Meta:
         verbose_name = 'Характеристика'
