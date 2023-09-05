@@ -1,5 +1,3 @@
-import json
-
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -11,7 +9,6 @@ from catalog.product.repository import (
     ProductFilter,
     Products
 )
-from catalog.utils import check_spell
 from haystack.query import SearchQuerySet
 
 
@@ -24,18 +21,20 @@ class ProductView(ModelViewSet):
     @action(methods=['GET', ], detail=False, url_name='search')
     def search(self, request):
         q = request.GET.get('q', '')
-        results = SearchQuerySet().models(Products).filter(content=check_spell(q))
+
+        results = SearchQuerySet().models(Products).filter(content=q)
 
         return Response(
             status=status.HTTP_200_OK,
             data=self.serializer_class([r.object for r in results], many=True).data
         )
 
-    def list(self, request, *args, **kwargs):
-        return Response(
-            status=status.HTTP_200_OK,
-            data=self.serializer_class(self.queryset, many=True).data
-        )
+    # def list(self, request, *args, **kwargs):
+    #     qs = self.filterset_class(request.GET, queryset=self.queryset).qs
+    #     return Response(
+    #         status=status.HTTP_200_OK,
+    #         data=self.serializer_class(qs, many=True).data
+    #     )
 
     @action(methods=['GET', ], detail=False, url_name='autocomplete')
     def autocomplete(self, request):

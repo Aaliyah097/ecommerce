@@ -12,16 +12,31 @@ from dataclasses import asdict
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Categories
-        fields = '__all__'
+        fields = ('name', 'slug', 'file')
 
 
 class CategoryFilter(django_filters.FilterSet):
     class Meta:
         model = Categories
-        fields = '__all__'
+        fields = ('name', 'slug')
 
 
 class CategoryRepository:
+    def transform(self, model: Categories) -> Category:
+        return Category(
+                name=model.name,
+                slug=model.slug,
+                children=self.get_children(model),
+                file=model.file.path if model.file else None
+            )
+
+    @staticmethod
+    def get_by_slug(slug: str) -> Categories | None:
+        try:
+            return Categories.objects.get(slug=slug)
+        except Categories.DoesNotExist:
+            return None
+
     @staticmethod
     def get_queryset() -> QuerySet[Categories]:
         return Categories.objects.all()
@@ -37,11 +52,7 @@ class CategoryRepository:
     def tree(self) -> list[Category]:
         base_categories = Categories.objects.filter(parent__isnull=True)
         return [
-            Category(
-                name=cat.name,
-                slug=cat.slug,
-                children=self.get_children(cat)
-            )
+            self.transform(cat)
             for cat in base_categories
         ]
 
@@ -50,10 +61,6 @@ class CategoryRepository:
         children = Categories.objects.filter(parent=category)
 
         return [
-            Category(
-                name=child.name,
-                slug=child.slug,
-                children=self.get_children(child)
-            )
+            self.transform(child)
             for child in children
         ]

@@ -5,4 +5,5 @@ from dataclasses import dataclass
 class Category:
     name: str
     slug: str
+    file: str | None
     children: list['Category']
