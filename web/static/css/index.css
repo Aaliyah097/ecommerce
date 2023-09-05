@@ -26,6 +26,7 @@ main {
   left: 50%;
   transform: translate(-50%, 0);
   min-height: 100vh;
+  /* background: lightpink; */
 }
 
 .navbar {
@@ -196,3 +197,37 @@ main {
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
 }
+.catalog_menu_close{
+  display: none;
+  opacity: 0;
+  z-index: 1;
+  width: 27%;
+  min-height: 40vh;
+  height: auto;
+  background: rgb(219, 246, 255);
+}
+.catalog_menu_open{
+  display: block ;
+  opacity: 1;
+
+}
+.hidden{
+  display: none;
+}
+/* .menu_class{
+  display: flex;
+  position: relative;
+}
+.aside_block__menu{
+  width: 30%;
+  height: 100%
+}
+.category_list{
+  position: relative;
+}
+.aside_block__menu p{
+  margin: 0;
+  font-size: 18px;
+  width: 100%;
+  background: lightgrey;
+} */
