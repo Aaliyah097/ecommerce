@@ -4,6 +4,7 @@ from catalog.product.brand.views import BrandView
 from catalog.product.image.views import ImageView
 from catalog.product.spec.views import SpecsView
 from catalog.product.spec.detail.views import DetailView
+from catalog.cart.views import CartView
 
 from django.urls import path, include
 
@@ -17,4 +18,7 @@ urlpatterns = [
     path('images/', include(get_router('', ImageView))),
     path('specs/', include(get_router('', SpecsView))),
     path('details/', include(get_router('', DetailView))),
+
+    path('cart/', CartView.as_view(), name='cart'),
+    path('cart/<int:pk>', CartView.as_view(), name='cart-detail'),
 ]

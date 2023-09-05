@@ -354,3 +354,9 @@ input {
 .brand_desk {
   color: rgb(160, 160, 160)
 }
+
+legend{
+  font-family: 'IBM Plex Sans', sans-serif !important;
+  font-size: 18px;
+  font-weight: bold;
+}

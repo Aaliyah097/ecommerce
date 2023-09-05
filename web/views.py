@@ -1,17 +1,16 @@
 from django.shortcuts import render
 
-from catalog.product.repository import ProductFilter, Products
+from catalog.product.repository import ProductFilter, ProductRepository
 
 
 def index(request):
     return render(request, 'pages/index.html', {})
 
 
-def products_page(request):
-    products = Products.objects.all()
-    form = ProductFilter(request.GET, queryset=products)
+def catalog_page(request):
+    product_filter = ProductFilter(request.GET, queryset=ProductRepository.get_queryset())
 
     return render(request, 'pages/products.html', {
-        'filter': form,
-        'products': form.qs
+        'filter': product_filter,
+        'products': product_filter.qs
     })

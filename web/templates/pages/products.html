@@ -4,8 +4,8 @@
 {% csrf_token %}
 {% block page_content %}
 <div style="display: flex; margin-top: 2%">
-    <div style=" width:25%; height: 100vh;"> {% include 'components/products_filter.html' %}</div>
-    <div style=" width:75%;">
+    <div style=" width:15%; height: 100vh;"> {% include 'components/products_filter.html' %}</div>
+    <div style=" width:85%;">
         Товары в каталоге:
         <ul>
             {% for product in products %}
@@ -21,16 +21,13 @@
                     <div class="produce_card__buy">
                         <span class="brand_desk">
                             Брэнд:</span> {{ product.brand }}
-                        
                     </div>
                     <button class="Accept">Купить</button>
                     </div>
             </div>
             <!-- <li>{{ product.name }}</li> -->
-
-
             {% empty %}
-            <li>Нет товаров, соответствующих фильтру</li>
+            Нет товаров, соответствующих фильтру
             {% endfor %}
         </ul>
     </div>

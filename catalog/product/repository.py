@@ -1,5 +1,5 @@
 from django import forms
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Min, Max
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 import django_filters
 
@@ -30,15 +30,17 @@ class ProductSerializer(ModelSerializer):
 
 
 class ProductFilter(django_filters.FilterSet):
-    price = django_filters.RangeFilter(field_name='price')
+    price = django_filters.RangeFilter(
+        field_name='price',
+    )
     order_by_price = django_filters.ChoiceFilter(
         method='filter_by_price',
-        label='Сортировать по цене',
+        label='Упорядочить по цене',
         choices=(
             ('ascending', 'По возврастанию'),
             ('descending', 'По убыванию')
         ),
-        widget=forms.Select()
+        widget=forms.RadioSelect()
     )
     name = django_filters.CharFilter(
         widget=forms.HiddenInput(),
@@ -62,6 +64,15 @@ class ProductFilter(django_filters.FilterSet):
         else:
             return queryset
 
+    def filter_queryset(self, queryset):
+        qs = super().filter_queryset(queryset)
+
+        # добавлять в поля фильтра по цене минимальную и максимальную цены товаров в выборке
+        self.form.fields['price'].widget.widgets[0].attrs['placeholder'] = f"от {qs.aggregate(Min('price'))['price__min']}"
+        self.form.fields['price'].widget.widgets[1].attrs['placeholder'] = f"до {qs.aggregate(Max('price'))['price__max']}"
+
+        return qs
+
     def __init__(self, *args, **kwargs):
         try:
             category = args[0].get('category', None)
@@ -72,7 +83,7 @@ class ProductFilter(django_filters.FilterSet):
         except IndexError:
             brand = None
 
-        super().__init__(*args, **kwargs)
+        super(ProductFilter, self).__init__(*args, **kwargs)
 
         if category:
             details_pks = Specs.objects.filter(product__category__slug=category).values_list('detail__pk')

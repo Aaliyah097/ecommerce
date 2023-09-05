@@ -1,9 +1,9 @@
-from rest_framework.routers import SimpleRouter
+from rest_framework.routers import DefaultRouter
 from spellchecker import SpellChecker
 
 
 def get_router(name: str, view) -> list:
-    r = SimpleRouter()
+    r = DefaultRouter()
     r.register(name, view)
     return r.urls
 
