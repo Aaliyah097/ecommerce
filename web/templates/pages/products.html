@@ -3,13 +3,38 @@
 
 {% csrf_token %}
 {% block page_content %}
-    {% include 'components/products_filter.html' %}
-    Товары в каталоге:
-    <ul>
-        {% for product in products %}
-            <li>{{ product.name }}</li>
-        {% empty %}
+<div style="display: flex; margin-top: 2%">
+    <div style=" width:25%; height: 100vh;"> {% include 'components/products_filter.html' %}</div>
+    <div style=" width:75%;">
+        Товары в каталоге:
+        <ul>
+            {% for product in products %}
+            <div class="product_card">
+                <div class="product_card__text">
+                    <div class="product_card__header">
+                        <h2>{{ product.name }}</h2>
+                    </div>
+                    <div class="product_card__description"></div>
+                </div>
+                <div class="product_card__action">
+                    <div class="product_card__price">{{ product.price }} Руб.</div>
+                    <div class="produce_card__buy">
+                        <span class="brand_desk">
+                            Брэнд:</span> {{ product.brand }}
+                        
+                    </div>
+                    <button class="Accept">Купить</button>
+                    </div>
+            </div>
+            <!-- <li>{{ product.name }}</li> -->
+
+
+            {% empty %}
             <li>Нет товаров, соответствующих фильтру</li>
-        {% endfor %}
-    </ul>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+
 {% endblock %}

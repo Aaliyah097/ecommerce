@@ -1,9 +1,11 @@
-<form method="get">
+<form method="get" class="filter_form">
     {% for field in filter.form.visible_fields %}
         <fieldset>
-            <legend>{{ field.label }}</legend>
+            <legend class="legend_filter_description">{{ field.label }}</legend>
             {{ field }}
+          
         </fieldset>
     {% endfor %}
-    <button type="submit">Применить фильтр</button>
+    <br>
+    <button type="submit" class="Accept">Применить фильтр</button>
 </form>
