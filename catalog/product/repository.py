@@ -138,3 +138,10 @@ class ProductRepository:
     @staticmethod
     def get_queryset() -> QuerySet[Products]:
         return Products.objects.all().prefetch_related('specs', 'images')
+
+    @staticmethod
+    def get_by_id(pk: int) -> Products | None:
+        try:
+            return Products.objects.get(pk=pk)
+        except Products.DoesNotExist:
+            return None

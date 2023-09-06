@@ -1,0 +1,129 @@
+{% extends 'copy_pages/base.html' %}
+{% load static %}
+
+{%  block page_content %}
+    <nav class="ant-breadcrumb" style="margin:16px 0;text-transform:uppercase;letter-spacing:1px;font-size:10px;font-weight:600;color:#349bd4">
+        <ol>
+            <li>
+                <span class="ant-breadcrumb-link">
+                    <a href="/">Главная</a>
+                </span>
+                <span class="ant-breadcrumb-separator">/</span>
+            </li>
+            <li>
+                <span class="ant-breadcrumb-link">
+                    <a href="/catalog">Каталог</a>
+                </span>
+                <span class="ant-breadcrumb-separator">/</span>
+            </li>
+        </ol>
+    </nav>
+    <h4>Gamma Group - поставщик сетевого и серверного оборудования</h4>
+    <div style="border-radius:6px;width:100%;min-height:350px;background:url({% static 'img/slider.png' %}) left center no-repeat #ABE1FA;margin-bottom:32px">
+        <div class="ant-row ant-row-middle">
+            <div style="min-height:350px" class="ant-col ant-col-xs-24 ant-col-sm-24 ant-col-md-13 ant-col-lg-10"></div>
+            <div style="vertical-align:middle;padding:24px" class="ant-col ant-col-xs-24 ant-col-sm-24 ant-col-md-11 ant-col-lg-14">
+                <h1 style="color:#1F3D79;margin-bottom:4px;font-size:26px">Электронные Компоненты</h1>
+                <p>Поставщик серверного оборудования, сетевого оборудования и электронных компонентов</p>
+            </div>
+        </div>
+    </div>
+    {% comment %}Фильтр{% endcomment %}
+    <div class="ant-row" style="margin-left:-8px;margin-right:-8px">
+        <div style="padding-left:8px;padding-right:8px" class="ant-col ant-col-6">
+            <form method="get" action="{% url 'catalog' %}#result">
+                <ul class="ant-menu ant-menu-root ant-menu-inline ant-menu-light VMenu" role="menu" tabindex="0" data-menu-list="true">
+                    {% for field in filter.form.visible_fields %}
+                        <li class="ant-menu-submenu ant-menu-submenu-inline ant-menu-submenu-open" role="none">
+                            <div role="menuitem" class="ant-menu-submenu-title" tabindex="-1" aria-expanded="false" aria-haspopup="true" style="padding-left: 24px;">
+                                <span class="ant-menu-title-content">{{ field.label }}</span>
+                                <i class="ant-menu-submenu-arrow"></i>
+                            </div>
+                            <ul class="ant-menu ant-menu-sub ant-menu-inline" id="rc-menu-uuid-71026-3-1732-popup" data-menu-list="true">
+                                <li role="menuitem" tabindex="-1" data-menuid="rc-menu-uuid-71026-3-1733" class="ant-menu-item ant-menu-item-only-child" style="padding-left: 48px; height: auto">
+                                    <span class="ant-menu-title-content">{{ field }}</span>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            <button id="result" type="submit">Применить</button>
+            </form>
+            <div style="display:none" aria-hidden="true"></div>
+        </div>
+        <div style="padding-left:8px;padding-right:8px" class="ant-col ant-col-18">
+            <nav class="ant-breadcrumb" style="margin:16px 0;text-transform:uppercase;letter-spacing:1px;font-size:10px;font-weight:600;color:#349bd4">
+                <ol>
+                    <li>
+                        <span class="ant-breadcrumb-link">
+                            <a>Товаров {{ page.paginator.count }}</a>
+                        </span>
+                        <span class="ant-breadcrumb-separator">/</span>
+                    </li>
+                    <li>
+                        <span class="ant-breadcrumb-link">
+                            <a>Страниц {{ page.paginator.page_range|length }}</a>
+                        </span>
+                    </li>
+                </ol>
+            </nav>
+            {% for product in page %}
+                <div class="ant-card ant-card-bordered catalogProductCard">
+                    <div class="ant-card-body">
+                        <div class="ant-row">
+                            <div class="ant-col ant-col-lg-20">
+                                <h2 style="font-weight: 500; font-size: 15px; text-transform: uppercase; margin: 5px 0;">{{ product.part_number }}</h2>
+                                <h3 style="font-size: 11px; color: rgb(125, 135, 156); text-transform: uppercase; margin: 5px 0;">{{ product.brand }}</h3>
+                                <p style="font-size: 12px;">{{ product.name }}</p>
+                            </div><div class="ant-col ant-col-lg-4">
+                            <div style="display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500; height: 100%; color: rgb(52, 155, 212); float: right;">₽{{ product.price }}</div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="pagination-container">
+                <ul class="pagination">
+                    {% if page.has_previous %}
+                        <li>
+                            <a href="?page={{ page.previous_page_number }}">
+                                <span role="img" aria-label="left" class="anticon anticon-left">
+                                    <svg viewBox="64 64 896 896" focusable="false" data-icon="left" width="1em" height="1em" fill="currentColor" aria-hidden="true">
+                                        <path d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"></path>
+                                    </svg>
+                                </span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for i in page.paginator.page_range %}
+                        {% if page.number == i %}
+                            <li class="current-page">{{ i }}</li>
+                        {% elif i > page.number|add:3 and i < page.paginator.page_range|length %}
+                            {#                            <span class="ant-pagination-item-ellipsis" style="color: #777777">•••</span>#}
+                        {% elif i < page.number|add:-1 and i > 1 %}
+                            {#                            <span class="ant-pagination-item-ellipsis" style="color: #777777">•••</span>#}
+                        {% else %}
+                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page.has_next %}
+                        <li>
+                            <a href="?page={{ page.next_page_number }}">
+                                <span role="img" aria-label="left" class="anticon anticon-left">
+                                    <svg viewBox="64 64 896 896" focusable="false" data-icon="right" width="1em" height="1em" fill="currentColor" aria-hidden="true">
+                                        <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z">
+
+                                        </path>
+                                    </svg>
+                                </span>
+                            </a>
+                        </li>
+                        <li><a href="?page={{ page.paginator.num_pages }}">последняя &raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,38 @@
+input[name='price_min'], input[name='price_max']{
+    border-radius: 5px;
+    width: 45%;
+    padding-left: 10px;
+}
+
+.pagination-container {
+    text-align: center;
+}
+
+.pagination {
+    display: inline-block;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination li {
+    display: inline;
+    margin-right: 5px;
+}
+
+.pagination li a {
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #ffffff;
+    color: #333;
+}
+
+.pagination li.current-page {
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 2px solid #ABE1FA;
+    border-radius: 3px;
+    background-color: #ffffff;
+    color: #333;
+}

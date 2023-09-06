@@ -19,6 +19,6 @@ urlpatterns = [
     path('specs/', include(get_router('', SpecsView))),
     path('details/', include(get_router('', DetailView))),
 
-    path('cart/', CartView.as_view(), name='cart'),
+    path('cart/', CartView.as_view(), name='cart-list'),
     path('cart/<int:pk>', CartView.as_view(), name='cart-detail'),
 ]

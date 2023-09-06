@@ -4,19 +4,30 @@ from typing import Iterator
 from django.contrib.sessions.backends.db import SessionStore
 
 
-@dataclass
 class CartItem:
-    product_id: int
-    name: str
-    price: float = 0
-    amount: int = 1
-    _cost: float = 0
+    def __init__(self, product_id: int, name: str, price: float = 0, amount: int = 1):
+        self.product_id: str = str(product_id)
+        self.name: str = name
+        self.price: float = price
+        self.amount: int = amount
+        self._cost: float = 0
 
     def __add__(self, other):
         self.amount += other.amount
 
+    def __iadd__(self, other):
+        self.amount += other.amount
+        return self
+
     def __sub__(self, other):
         self.amount -= other.amount
+
+    def __isub__(self, other):
+        self.amount -= other.amount
+        return self
+
+    def __str__(self):
+        return str(self.serialize())
 
     @property
     def cost(self) -> float:
@@ -31,6 +42,15 @@ class CartItem:
             'cost': self.cost
         }
 
+    @staticmethod
+    def deserialize(item: dict) -> 'CartItem':
+        return CartItem(
+            product_id=item['product_id'],
+            name=item['name'],
+            price=item['price'],
+            amount=item['amount']
+        )
+
 
 class Cart:
     def __init__(self, session: SessionStore):
@@ -40,7 +60,7 @@ class Cart:
         if not cart:
             cart = self.session['cart'] = {}
 
-        self._cart: dict[int, CartItem] = cart
+        self._cart: dict[str, dict] = cart
 
     # признак наличия в корзине
     def in_cart(self, item: CartItem) -> bool:
@@ -48,11 +68,11 @@ class Cart:
 
     # количество товаров в корзине
     def __len__(self) -> int:
-        return sum([item.amount for item in self._cart.values()])
+        return sum([CartItem.deserialize(item).amount for item in self._cart.values()])
 
     # стоимость всей корзины
     def cost(self) -> float:
-        return sum([item.cost for item in self._cart.values()])
+        return sum([CartItem.deserialize(item).cost for item in self._cart.values()])
 
     # очистить корзину
     def clear(self) -> None:
@@ -61,20 +81,28 @@ class Cart:
 
     # добавить товар
     def add(self, item: CartItem) -> None:
-        if not self.in_cart(item):
-            self._cart[item.product_id] = item
-        else:
-            self._cart[item.product_id] += item
+        if self.in_cart(item):
+            current_item = CartItem.deserialize(self._cart[item.product_id])
+            current_item += item
+            item = current_item
+
+        self._cart[item.product_id] = item.serialize()
+        self.session.modified = True
 
     # уменьшить количество товара на 1
     def sub(self, item: CartItem) -> None:
         if not self.in_cart(item):
             return
-        else:
-            self._cart[item.product_id] -= item
 
-        if self._cart[item.product_id].amount == 0:
+        current_item = CartItem.deserialize(self._cart[item.product_id])
+        current_item -= item
+
+        if current_item.amount == 0:
             self.dell(item)
+        else:
+            self._cart[item.product_id] = current_item.serialize()
+
+        self.session.modified = True
 
     # удалить товар из корзины
     def dell(self, item: CartItem) -> None:
@@ -82,9 +110,10 @@ class Cart:
             return
         else:
             del self._cart[item.product_id]
-            self.session.modified = True
+
+        self.session.modified = True
 
     # получить список товаров в корзине
     @property
     def items(self) -> list[CartItem]:
-        return [item for item in self._cart.values()]
+        return [CartItem.deserialize(item) for item in self._cart.values()]

@@ -23,7 +23,7 @@ body {
 
 main {
   position: relative;
-  width: 70%;
+  width: 50%;
   left: 50%;
   transform: translate(-50%, 0);
   min-height: 100vh;
@@ -34,20 +34,24 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 70%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  padding-top: 0.5%;
   /* padding-bottom: 1.8%;
   border-bottom: 1px solid rgb(231, 231, 231); */
 }
 
 .line_grey {
-
   position: absolute;
-  left: -23%;
-  height: 15px;
+  /*left: -23%;*/
+  height: 10px;
   width: 100vw;
   background: var(--white_color);
-  -webkit-box-shadow: 1px 12px 10px -2px rgba(170, 170, 170, 0.2);
-  -moz-box-shadow: 1px 12px 10px -2px rgba(170, 170, 170, 0.2);
-  box-shadow: 1px 12px 10px -2px rgba(170, 170, 170, 0.2);
+  border-bottom: 1px solid #E2E5ED;
+  /*-webkit-box-shadow: 1px 12px 10px -2px rgba(170, 170, 170, 0.2);*/
+  /*-moz-box-shadow: 1px 12px 10px -2px rgba(170, 170, 170, 0.2);*/
+  /*box-shadow: 1px 12px 10px -2px rgba(170, 170, 170, 0.2);*/
 }
 
 .logo {
@@ -58,12 +62,9 @@ main {
   /* margin-right: 2%; */
 }
 
-
-
 .pages {
   /* background: rgb(158, 100, 100); */
   margin-left: 2%;
-
 }
 
 .search {
@@ -84,6 +85,7 @@ main {
   /*left: 100%;*/
   font-size: 15px;
   padding-top: 5%;
+  padding-left: 5%;
   white-space: nowrap;
   color: var(--blue_color);
   font-weight: 600;
@@ -117,7 +119,7 @@ main {
 
 .active_link_button {
   border-bottom: 2px solid var(--blue_color) !important;
-
+  color: var(--blue_color) !important;
 }
 
 

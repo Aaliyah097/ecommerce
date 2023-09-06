@@ -57,8 +57,9 @@
 
 {% csrf_token %}
 
+{% include 'elements/navbar.html' %}
+
 <main>
-    {% include 'elements/navbar.html' %}
     {% block page_content %}
 
     {% endblock %}
