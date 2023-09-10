@@ -6,6 +6,22 @@ from django.urls import reverse
 from mptt.models import MPTTModel, TreeForeignKey
 
 
+class Currencies(models.Model):
+    name = models.CharField(verbose_name='Название',
+                            max_length=4,
+                            unique=True)
+    symbol = models.CharField(verbose_name='Символ',
+                              max_length=1)
+
+    def __str__(self):
+        return f"{self.name} {self.symbol}"
+
+    class Meta:
+        verbose_name = 'Валюта'
+        verbose_name_plural = 'Валюты'
+        db_table = 'currencies'
+
+
 class Details(models.Model):
     name = models.CharField(verbose_name='Название',
                             max_length=50,
@@ -86,6 +102,8 @@ class Brands(models.Model):
                              upload_to='brands/',
                              null=True,
                              blank=True)
+    description = models.TextField(verbose_name='Описание',
+                                   default=None, blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('catalog:brands-detail', kwargs={'pk': self.slug})
@@ -126,6 +144,12 @@ class Products(models.Model):
                               related_name='products_by_brand')
     price = models.FloatField(verbose_name='Цена',
                               default=0)
+    currency = models.ForeignKey(Currencies,
+                                 verbose_name='Валюта',
+                                 to_field='name',
+                                 on_delete=models.SET_NULL,
+                                 related_name='products_by_currency',
+                                 null=True)
     description = models.TextField(verbose_name='Описание',
                                    default=None,
                                    blank=True,
@@ -138,6 +162,7 @@ class Products(models.Model):
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
         db_table = 'products'
+        ordering = ('-id', )
 
         unique_together = ('part_number', 'brand')
 
@@ -152,7 +177,8 @@ class Specs(models.Model):
                                 on_delete=models.CASCADE,
                                 related_name='specs',
                                 null=True, default=None)
-    value = models.TextField(verbose_name='Значение', null=True)
+    value = models.TextField(verbose_name='Значение',
+                             null=True)
 
     def __str__(self):
         return self.value
@@ -187,3 +213,66 @@ def delete_image_file(sender, instance, **kwargs):
         instance.file.delete(False)
     except AttributeError:
         pass
+
+
+class Orders(models.Model):
+    STATUS_CHOICES = (
+        ('new', 'Новый'),
+        ('finished', 'Завершенный'),
+        ('estimating', 'Оценивается'),
+        ('awaiting', 'Ожидает'),
+        ('delivering', 'Доставляется'),
+        ('delivered', 'Доставлен'),
+        ('canceled', 'Отменен'),
+        ('payment', 'Ожидает оплаты'),
+        ('payed', 'Оплачен'),
+    )
+    comment = models.TextField(verbose_name='Комментарий',
+                               blank=True,
+                               null=True,
+                               default=None)
+    status = models.CharField(verbose_name='Статус',
+                              max_length=25,
+                              choices=STATUS_CHOICES,
+                              default='new')
+    created_at = models.DateTimeField(verbose_name='Дата создания',
+                                      auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name='Дата обновления',
+                                      auto_now=True)
+    discount = models.FloatField(verbose_name='Скидка',
+                                 default=0)
+    client = models.TextField(verbose_name='Контакты',
+                              default=None,
+                              blank=True,
+                              null=True)
+    rate = models.FloatField(verbose_name='Курс к ₽',
+                             default=None,
+                             blank=True,
+                             null=True)
+
+    class Meta:
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Заказы'
+        db_table = 'orders'
+
+
+class OrderItems(models.Model):
+    order = models.ForeignKey(Orders,
+                              verbose_name='Заказ',
+                              related_name='order_items',
+                              on_delete=models.CASCADE)
+    product = models.ForeignKey(Products,
+                                verbose_name='Товар',
+                                related_name='product_items',
+                                on_delete=models.CASCADE)
+    amount = models.IntegerField(verbose_name='Количество',
+                                 default=0)
+    comment = models.TextField(verbose_name='Комментарий',
+                               default=None,
+                               blank=True,
+                               null=True)
+
+    class Meta:
+        verbose_name = 'Позиция заказа'
+        verbose_name_plural = 'Позиции заказа'
+        db_table = 'order_items'

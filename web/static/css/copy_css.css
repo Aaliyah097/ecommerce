@@ -1,3 +1,11 @@
+:root {
+  --white_color: #ffffff;
+  --blue_color: #5eb7e7;
+  --lightblue_color: #84C4E4;
+  --black_color: #1f1f1f;
+  --priceSize: 20px
+}
+
 input[name='price_min'], input[name='price_max']{
     border-radius: 5px;
     width: 45%;
@@ -35,4 +43,22 @@ input[name='price_min'], input[name='price_max']{
     border-radius: 3px;
     background-color: #ffffff;
     color: #333;
+}
+
+.btn-gamma-info {
+    background: var(--blue_color);
+    padding: 10px 2vh;
+    color: rgb(255, 255, 255);
+    font-weight: 400;
+    border: none;
+    border-radius: 5px;
+    position: relative;
+    white-space: nowrap;
+    transition: 0.4s;
+    width: 100%;
+}
+
+.btn-gamma-info:hover {
+    background: var(--lightblue_color);
+    cursor: pointer;
 }

@@ -1,5 +1,6 @@
 {% extends 'copy_pages/base.html' %}
 {% load static %}
+{% load split_number %}
 
 {%  block page_content %}
     <nav class="ant-breadcrumb" style="margin:16px 0;text-transform:uppercase;letter-spacing:1px;font-size:10px;font-weight:600;color:#349bd4">
@@ -7,12 +8,6 @@
             <li>
                 <span class="ant-breadcrumb-link">
                     <a href="/">Главная</a>
-                </span>
-                <span class="ant-breadcrumb-separator">/</span>
-            </li>
-            <li>
-                <span class="ant-breadcrumb-link">
-                    <a href="/catalog">Каталог</a>
                 </span>
                 <span class="ant-breadcrumb-separator">/</span>
             </li>
@@ -29,9 +24,9 @@
         </div>
     </div>
     {% comment %}Фильтр{% endcomment %}
-    <div class="ant-row" style="margin-left:-8px;margin-right:-8px">
+    <div class="ant-row" style="margin-left:-8px;margin-right:-8px" id="result">
         <div style="padding-left:8px;padding-right:8px" class="ant-col ant-col-6">
-            <form method="get" action="{% url 'catalog' %}#result">
+            <form method="get" action="{% url 'catalog' %}#result" id="filter-form">
                 <ul class="ant-menu ant-menu-root ant-menu-inline ant-menu-light VMenu" role="menu" tabindex="0" data-menu-list="true">
                     {% for field in filter.form.visible_fields %}
                         <li class="ant-menu-submenu ant-menu-submenu-inline ant-menu-submenu-open" role="none">
@@ -47,7 +42,8 @@
                         </li>
                     {% endfor %}
                 </ul>
-            <button id="result" type="submit">Применить</button>
+                <br>
+                <button class="btn btn-gamma-info" type="submit">Применить</button>
             </form>
             <div style="display:none" aria-hidden="true"></div>
         </div>
@@ -76,7 +72,7 @@
                                 <h3 style="font-size: 11px; color: rgb(125, 135, 156); text-transform: uppercase; margin: 5px 0;">{{ product.brand }}</h3>
                                 <p style="font-size: 12px;">{{ product.name }}</p>
                             </div><div class="ant-col ant-col-lg-4">
-                            <div style="display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500; height: 100%; color: rgb(52, 155, 212); float: right;">₽{{ product.price }}</div>
+                            <div style="display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500; height: 100%; color: rgb(52, 155, 212); float: right;">{{ product.currency.symbol }} {{ product.price|split_number }}</div>
                         </div>
                         </div>
                     </div>

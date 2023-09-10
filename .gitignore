@@ -9,6 +9,8 @@ railstat.dmp
 media
 archive
 
+# google
+credentials.json
 
 # Backup files #
 *.bak

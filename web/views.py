@@ -2,10 +2,31 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 
 from catalog.product.repository import ProductFilter, ProductRepository
+from catalog.product.brand.repository import BrandRepository
+from catalog.category.repository import CategoryRepository
 
 
 def index(request):
-    return render(request, 'copy_pages/index.html', {})
+    categories = []
+
+    for cat in CategoryRepository.get_queryset():
+        categories.append({
+            'category': cat,
+            'amount': ProductRepository.get_queryset().filter(category=cat).count()
+        })
+
+    brands = []
+
+    for brand in BrandRepository.get_queryset():
+        brands.append({
+            'brand': brand,
+            'amount': ProductRepository.get_queryset().filter(brand=brand).count()
+        })
+
+    return render(request, 'copy_pages/index.html', {
+        'brands': brands,
+        'categories': categories
+    })
 
 
 def contacts_page(request):

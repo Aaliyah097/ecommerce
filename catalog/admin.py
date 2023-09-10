@@ -1,6 +1,6 @@
-from django import forms
 from django.contrib import admin
-from django.forms import BaseInlineFormSet
+from django.template.loader import get_template
+from django.utils.safestring import mark_safe
 
 from catalog.models import *
 
@@ -8,6 +8,13 @@ from mptt.admin import DraggableMPTTAdmin, TreeRelatedFieldListFilter
 from rangefilter.filters import (
     NumericRangeFilterBuilder,
 )
+
+from catalog.utils import update_rates
+
+
+@admin.register(Currencies)
+class CurrenciesAdmin(admin.ModelAdmin):
+    list_display = ('name', 'symbol')
 
 
 @admin.register(Categories)
@@ -65,16 +72,18 @@ class BrandsAdmin(admin.ModelAdmin):
 
 class ImagesAdmin(admin.TabularInline):
     model = Images
+    extra = 0
 
 
 class SpecsAdmin(admin.TabularInline):
     model = Specs
+    extra = 0
 
 
 @admin.register(Products)
 class ProductsAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Products._meta.fields]
-    list_editable = ['part_number', 'price', 'category', 'name', 'brand']
+    list_editable = ['part_number', 'price', 'category', 'name', 'brand', 'currency']
     inlines = [
         SpecsAdmin,
         ImagesAdmin
@@ -86,6 +95,7 @@ class ProductsAdmin(admin.ModelAdmin):
         'category',
         ('price', NumericRangeFilterBuilder()),
         'specs',
+        'currency'
     )
     actions = ['export_xlsx', ]
 
@@ -99,3 +109,36 @@ class DetailsAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Details._meta.fields]
 
     list_editable = ['name', ]
+
+
+class OrderItemsAdmin(admin.TabularInline):
+    model = OrderItems
+    extra = 0
+    raw_id_fields = ['product']
+
+
+@admin.register(Orders)
+class OrdersAdmin(admin.ModelAdmin):
+    list_display = ['id', 'get_items', 'get_total_cost', 'rate', 'status', 'created_at', 'updated_at', 'discount', 'client', 'comment']
+    list_editable = ['status', 'discount', 'client', 'comment', 'rate']
+    inlines = [OrderItemsAdmin, ]
+    search_fields = ['id', 'client']
+    list_filter = ['status']
+
+    def get_total_cost(self, obj):
+        items = OrderItems.objects.filter(order=obj)
+        if obj.rate:
+            for item in items:
+                item.product.price = item.product.price * obj.rate
+                item.in_currency = item.product.price / obj.rate
+        else:
+            update_rates([item.product for item in items])
+
+        return mark_safe(f"{round(sum([item.product.price * item.amount for item in items]) * ((100 - obj.discount) / 100), 2)} RUB" + "<br><br>")
+
+    def get_items(self, obj):
+        items = OrderItems.objects.filter(order=obj)
+        return mark_safe('<br><br>'.join([f"{item.product.category.name} {item.product.brand.name} {item.product.part_number} {item.amount} шт." for item in items]))
+
+    get_items.short_description = "Товары в заказе"
+    get_total_cost.short_description = "Итого"

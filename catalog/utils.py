@@ -1,5 +1,59 @@
-from rest_framework.routers import DefaultRouter
+from io import BytesIO
+import os
+import logging
+import requests
+
 from spellchecker import SpellChecker
+from pycbrf import ExchangeRates
+import datetime
+import openpyxl
+
+from catalog.models import Products, Currencies
+from django.db.models import QuerySet
+from rest_framework.routers import DefaultRouter
+
+
+logger = logging.getLogger(__name__)
+
+
+def get_google_sheet_data() -> dict:
+    sheet_id = os.environ.get('GOOGLE_SHEET_ID')
+    sheet_range = 'A1:Z10000'
+    api_key = os.environ.get('GOOGLE_API_KEY')
+
+    url = f"https://sheets.googleapis.com/v4/spreadsheets/{sheet_id}/values/{sheet_range}?key={api_key}"
+    return requests.get(url).json()
+
+
+def clean_price(price: str) -> float | None:
+    price = str(price).replace('р.', "").replace(",", ".").replace(" ", "").replace("$", "").replace('\xa0', "")
+    try:
+        return float(price)
+    except TypeError:
+        return None
+
+
+def export_xlsx(products: QuerySet[Products]) -> BytesIO:
+    pass
+
+
+def update_rates(products: list[Products]):
+    try:
+        currency = Currencies.objects.get(name='RUB')
+    except Currencies.DoesNotExist:
+        currency = None
+
+    daily_rates = ExchangeRates(str(datetime.date.today()))
+
+    if currency:
+        for product in products:
+            if product.currency == currency:
+                continue
+            rate = daily_rates[product.currency.name]
+            product.currency = currency
+            product.price = round(float(rate.rate) * product.price, 0)
+
+    return products
 
 
 def get_router(name: str, view) -> list:

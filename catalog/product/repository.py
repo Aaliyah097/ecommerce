@@ -3,7 +3,8 @@ from django.db.models import QuerySet, Min, Max
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 import django_filters
 
-from catalog.models import Products, Details, Specs, Categories, Brands
+from catalog.utils import update_rates
+from catalog.models import Products, Details, Specs, Categories, Brands, Currencies
 from catalog.product.image.repository import ImageSerializer
 from catalog.product.spec.repository import SpecsSerializer
 from catalog.product.brand.repository import BrandSerializer
@@ -65,11 +66,18 @@ class ProductFilter(django_filters.FilterSet):
             return queryset
 
     def filter_queryset(self, queryset):
-        qs = super().filter_queryset(queryset)
+        qs = update_rates(super().filter_queryset(queryset))
+
+        if len(qs) != 0:
+            min_price = min(qs, key=lambda p: p.price).price
+            max_price = max(qs, key=lambda p: p.price).price
+        else:
+            min_price = 0
+            max_price = 0
 
         # добавлять в поля фильтра по цене минимальную и максимальную цены товаров в выборке
-        self.form.fields['price'].widget.widgets[0].attrs['placeholder'] = f"от {qs.aggregate(Min('price'))['price__min']}"
-        self.form.fields['price'].widget.widgets[1].attrs['placeholder'] = f"до {qs.aggregate(Max('price'))['price__max']}"
+        self.form.fields['price'].widget.widgets[0].attrs['placeholder'] = f"от {min_price}"
+        self.form.fields['price'].widget.widgets[1].attrs['placeholder'] = f"до {max_price}"
 
         return qs
 
@@ -131,7 +139,7 @@ class ProductFilter(django_filters.FilterSet):
 
     class Meta:
         model = Products
-        fields = '__all__'
+        exclude = ('currency', )
 
 
 class ProductRepository:

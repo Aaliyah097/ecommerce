@@ -1,7 +1,9 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import platform
 
+from kombu import Queue
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -9,12 +11,13 @@ load_dotenv()
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = True
+DEBUG = True if platform.system().lower() == 'windows' else False
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', '83.167.124.57', 'gamma-it.ru', ]
 
 # Application definition
 INSTALLED_APPS = [
+    'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -22,11 +25,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'corsheaders',
     'haystack',
     'django_elasticsearch_dsl',
     'rangefilter',
     'mptt',
-    'django_extensions',
     'django_filters',
     'rest_framework',
 
@@ -34,7 +37,12 @@ INSTALLED_APPS = [
     'web',
 ]
 
+# CORS
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_ALLOW_ALL = True
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -74,6 +82,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': os.environ.get('DB_NAME'),
+    #     'HOST': os.environ.get('DB_HOST'),
+    #     'PORT': os.environ.get('DB_PORT'),
+    #     'USER': os.environ.get('DB_USER'),
+    #     'PASSWORD': os.environ.get('DB_PASSWORD'),
+    # }
 }
 
 # Password validation
@@ -110,10 +126,61 @@ REST_FRAMEWORK = {
     ]
 }
 
+# LOGGING
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler'
+        },
+        'file': {
+            'level': "INFO",
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs.log'),
+            'formatter': 'verbose',
+        },
+    },
+    'loggers':
+        {
+            'ecommerce': {
+                'handlers': ['file'],
+                'level': 'INFO',
+                'propagate': True
+            },
+        }
+}
+
+# REDIS
+REDIS_HOST = os.environ.get('REDIS_HOST')
+REDIS_PORT = os.environ.get('REDIS_PORT')
+REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
+CELERY_BROKER_URL = f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0'
+CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+BROKER_CONNECTION_MAX_RETRIES = 1
+BROKER_CONNECTION_TIMEOUT = 30
+CELERY_SEND_EVENTS = True
+CELERY_DEFAULT_QUEUE = 'local' if DEBUG else 'default'
+CELERY_TASK_DEFAULT_QUEUE = 'local' if DEBUG else 'default'
+CELERY_QUEUES = (
+    Queue('celery'),
+    Queue('local'),
+)
+
 # elasticsearch
-ELASTICSEARCH_DSL={
+ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': f"{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}"
+        'hosts': f"{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}" if DEBUG else f"localhost:{os.environ.get('ELS_PORT')}"
     },
 }
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
@@ -122,7 +189,7 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch7_backend.Elasticsearch7SearchEngine',
-        'URL': f"http://{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}/",
+        'URL': f"http://{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}/" if DEBUG else f"http://localhost:{os.environ.get('ELS_PORT')}/",
         'INDEX_NAME': 'haystack',
     },
 }
