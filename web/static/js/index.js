@@ -21,5 +21,57 @@ function filter_listen(){
     }
 }
 
+$(function () {
+    $("#search_q").autocomplete({
+        source: "/catalog/products/autocomplete/",
+        minLength: 2,
+        delay: 100,
+    });
+});
+
+$(document).ready(function(){
+    $("a[href^='#']").on('click', function(event) {
+        event.preventDefault();
+
+        let target = this.hash;
+        let $target = $(target);
+
+        $('html, body').animate({
+            'scrollTop': $target.offset().top
+        }, 1000);
+        console.log(1)
+    });
+});
+
+function color_menu_links(){
+    let links = document.getElementsByName("page-link");
+    let path = window.location.href.split('/');
+    path = path.filter(item => !(item === ''));
+
+    if (path.length < 3){
+        links[0].setAttribute('class', 'ant-menu-overflow-item ant-menu-item ant-menu-item-selected ant-menu-item-only-child');
+        return
+    }
+
+    links.forEach(link=>{
+        let a_el = link.children[0].children[0];
+        let href = a_el.getAttribute('href');
+        href = href.slice(1, href.length - 1);
+
+        if (href === ""){
+            return
+        }
+
+        if (path.includes(href)){
+            link.setAttribute('class', 'ant-menu-overflow-item ant-menu-item ant-menu-item-selected ant-menu-item-only-child');
+        }
+        else{
+            link.setAttribute('class', 'ant-menu-overflow-item ant-menu-item ant-menu-item-only-child')
+        }
+    })
+}
+
+
 // filter_listen();
+color_menu_links();
 filter_toggle();

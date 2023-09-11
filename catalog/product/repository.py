@@ -45,7 +45,8 @@ class ProductFilter(django_filters.FilterSet):
     )
     name = django_filters.CharFilter(
         widget=forms.HiddenInput(),
-        field_name='name'
+        field_name='name',
+        lookup_expr='icontains'
     )
     description = django_filters.CharFilter(
         widget=forms.HiddenInput(),

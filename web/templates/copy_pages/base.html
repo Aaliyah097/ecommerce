@@ -4,7 +4,7 @@
 <head>
     <meta name="viewport" content="width=device-width">
     <meta charset="utf-8">
-    <title>Gamma Group - Supplier of network and server equipment</title>
+    <title>Gamma Group - Поставщик сетевого и серверного оборудования</title>
     <meta name="description" content="Supplier of network and server equipment">
     <meta name="next-head-count" content="4">
     {#    <link rel="stylesheet" href="{% static 'css/59fa98752805dbb1.css'%}" data-n-g="">#}
@@ -17,6 +17,9 @@
 
     {% comment %}JQuery{% endcomment %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
 </head>
 <body>
 <div id="__next">
@@ -26,7 +29,7 @@
                 <img alt="Gamma Group" srcset="{% static 'img/logo.png' %}" src="{% static 'img/logo2.webp' %}" width="32" height="32" decoding="async" data-nimg="future" class="logo" loading="lazy" style="color:transparent">
                 <span class="Logo_title__qpwTs">Gamma&nbsp;Group</span>
             </div>
-            <ul class="ant-menu-overflow ant-menu ant-menu-root ant-menu-horizontal ant-menu-light" style="width:calc(100% - 240px);margin-left:100px" role="menu" tabindex="0" data-menu-list="true">
+            <ul class="ant-menu-overflow ant-menu ant-menu-root ant-menu-horizontal ant-menu-light" style="width:calc(100% - 240px);margin-left:100px; position: relative" role="menu" tabindex="0" data-menu-list="true">
                 <li name="page-link" class="ant-menu-overflow-item ant-menu-item ant-menu-item-only-child" style="opacity:1;order:0" role="menuitem" tabindex="-1">
                     <span class="ant-menu-title-content">
                         <a href="{% url 'index' %}">Главная</a>
@@ -47,67 +50,31 @@
                         <a href="{% url 'contacts' %}">Контакты</a>
                     </span>
                 </li>
+                <li class="ant-menu-overflow-item ant-menu-item-only-child"
+                    style="opacity:1;order:4;"
+                    role="menuitem" tabindex="-1">
+                    <form id="search_form" action="{% url 'catalog' %}" method="GET" style="display: flex; position: relative; height: 100%">
+                        <input placeholder="Искать товары" class="form-control" id="search_q" name="name" />
+                        <button type="submit" id="search_button" value="Искать">Найти</button>
+                    </form>
+                </li>
             </ul>
             <div style="display:none" aria-hidden="true"></div>
         </header>
+        {% comment %}page content{% endcomment %}
         <main class="ant-layout-content container">
             {% block page_content %}
             {% endblock %}
         </main>
-        <footer class="ant-layout-footer" style="text-align:center;margin-top:32px">GammaIT ©2022</footer>
+        <footer class="ant-layout-footer" style="text-align:center;margin-top:32px">GammaIT ©2023</footer>
     </section>
 </div>
 <next-route-announcer>
     <p aria-live="assertive" id="__next-route-announcer__" role="alert" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; overflow-wrap: normal;">Gamma Group - Supplier of network and server equipment</p>
 </next-route-announcer>
 
-<script>
-    color_menu_links();
 
-    function color_menu_links(){
-        let links = document.getElementsByName("page-link");
-        let path = window.location.href.split('/');
-        path = path.filter(item => !(item === ''));
-
-        if (path.length < 3){
-            links[0].setAttribute('class', 'ant-menu-overflow-item ant-menu-item ant-menu-item-selected ant-menu-item-only-child');
-            return
-        }
-
-        links.forEach(link=>{
-            let a_el = link.children[0].children[0];
-            let href = a_el.getAttribute('href');
-            href = href.slice(1, href.length - 1);
-
-            if (href === ""){
-                return
-            }
-
-            if (path.includes(href)){
-                link.setAttribute('class', 'ant-menu-overflow-item ant-menu-item ant-menu-item-selected ant-menu-item-only-child');
-            }
-            else{
-                link.setAttribute('class', 'ant-menu-overflow-item ant-menu-item ant-menu-item-only-child')
-            }
-        })
-
-    }
-</script>
 <script src="{% static 'js/index.js' %}"></script>
-<script>
-    $(document).ready(function(){
-        $("a[href^='#']").on('click', function(event) {
-            event.preventDefault();
 
-            let target = this.hash;
-            let $target = $(target);
-
-            $('html, body').animate({
-                'scrollTop': $target.offset().top
-            }, 1000);
-            console.log(1)
-        });
-    });
-</script>
 </body>
 </html>

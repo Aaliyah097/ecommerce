@@ -100,7 +100,7 @@
                         {% elif i < page.number|add:-1 and i > 1 %}
                             {#                            <span class="ant-pagination-item-ellipsis" style="color: #777777">•••</span>#}
                         {% else %}
-                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                            <li><a href="?{{ query_params }}&page={{ i }}">{{ i }}</a></li>
                         {% endif %}
                     {% endfor %}
 
@@ -116,7 +116,6 @@
                                 </span>
                             </a>
                         </li>
-                        <li><a href="?page={{ page.paginator.num_pages }}">последняя &raquo;</a></li>
                     {% endif %}
                 </ul>
             </div>
