@@ -1,0 +1,31 @@
+<div class="modal" tabindex="-1" id="product_info_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                {% comment %}заголвоок{% endcomment %}
+                <h5 class="modal-title" id="product_info_modal_header"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            {% comment %}тело{% endcomment %}
+            <div class="modal-body" id="product_info_modal_body">
+                <div style="display: flex; flex-direction: row">
+                    <div id="product_image"></div>
+                    <div id="product_info">
+                        <div id="product_brand">
+                            <div id="product_brand_name"></div>
+                            <div id="product_brand_image"></div>
+                        </div>
+                        <div id="product_category"></div>
+                        <div id="product_name"></div>
+                        <div id="product_description"></div>
+                        <div id="product_specs"></div>
+                    </div>
+                </div>
+            </div>
+            {% comment %}кнопки{% endcomment %}
+            <div class="modal-footer" id="product_info_modal_footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>

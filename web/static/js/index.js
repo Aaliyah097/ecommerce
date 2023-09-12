@@ -71,6 +71,30 @@ function color_menu_links(){
     })
 }
 
+function get_product(product_id){
+    let csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
+    let data;
+    $.ajax({
+        type: 'get',
+        url: '/catalog/products/' + String(product_id),
+        headers: {'X-CSRFToken': csrf_token},
+        mode: 'same-origin',
+        async: false,
+        success : function(json)
+        {
+            data = json;
+        },
+        error : function(xhr,errmsg,err) {
+            alert('Повторите попытку позднее.');
+        }
+    })
+    return data
+}
+
+function toggle_more_info(pk){
+    document.getElementById(pk).classList.toggle('more_info_hidden');
+}
+
 
 // filter_listen();
 color_menu_links();

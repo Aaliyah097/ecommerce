@@ -1,4 +1,3 @@
-import datetime
 import os
 from celery import Celery
 from celery import shared_task
@@ -14,9 +13,7 @@ app.autodiscover_tasks()
 # мониторинг износа колеса
 @shared_task(name="repeat_sync_google_sheet", queue='local')
 def sync_google_sheet():
-    from catalog.utils import sync_products_with_google_sheet
-    sync_products_with_google_sheet()
-
+    pass
 
 # app.conf.beat_schedule = {
 #     'sync_google_sheet': {

@@ -1,8 +1,9 @@
-{% extends 'copy_pages/base.html' %}
+{% extends 'pages/base.html' %}
 {% load static %}
 {% load split_number %}
 
 {%  block page_content %}
+    {% csrf_token %}
     <nav class="ant-breadcrumb" style="margin:16px 0;text-transform:uppercase;letter-spacing:1px;font-size:10px;font-weight:600;color:#349bd4">
         <ol>
             <li>
@@ -64,23 +65,29 @@
                 </ol>
             </nav>
             {% for product in page %}
-                <div class="ant-card ant-card-bordered catalogProductCard">
+                <div class="ant-card ant-card-bordered catalogProductCard" onclick="toggle_more_info('product_specs_'+{{ product.pk }})">
                     <div class="ant-card-body">
                         <div class="ant-row">
                             <div class="ant-col ant-col-lg-20">
-                                <h2 style="font-weight: 500; font-size: 15px; text-transform: uppercase; margin: 5px 0;">{{ product.part_number }}</h2>
-                                <h3 style="font-size: 11px; color: rgb(125, 135, 156); text-transform: uppercase; margin: 5px 0;">{{ product.brand }}</h3>
+                                <h2 style="font-weight: 500; font-size: 15px; text-transform: uppercase; margin: 5px 0;"><a class="more_info_link" style="font-size: 22px; color: #84C4E4">🛈</a> {{ product.part_number }}</h2>
+                                <h3 style="font-size: 11px; color: rgb(125, 135, 156); text-transform: uppercase; margin: 5px 0;">{{ product.category }} {{ product.brand }}</h3>
                                 <p style="font-size: 12px;">{{ product.name }}</p>
-                            </div><div class="ant-col ant-col-lg-4">
-                            <div style="display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500; height: 100%; color: rgb(52, 155, 212); float: right;">{{ product.currency.symbol }} {{ product.price|split_number }}</div>
-                        </div>
+                                <div class="more_info_hidden" id="product_specs_{{product.pk}}">
+                                    {% for spec in product.specs.all %}
+                                        <span style="color: darkgray">{{ spec.detail.name }}:<span style="color: black">{{ spec.value }}</span></span><br>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="ant-col ant-col-lg-4">
+                                <div style="display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500; height: 100%; color: rgb(52, 155, 212); float: right;">{{ product.currency.symbol }} {{ product.price|split_number }}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             {% endfor %}
 
-            <div class="pagination-container">
-                <ul class="pagination">
+            <div class="pagination-container" style="display: flex; align-items: center; text-align: center">
+                <ul class="pagination" style="position: relative; left: 50%; transform: translate(-50%, 0)">
                     {% if page.has_previous %}
                         <li>
                             <a href="?page={{ page.previous_page_number }}">

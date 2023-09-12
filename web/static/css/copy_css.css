@@ -120,5 +120,16 @@ input[name='price_min'], input[name='price_max']{
 #ui-id-1{
     border-radius: 5px !important;
     width: 44.7vw !important;
-    top: 8.5% !important;
+}
+
+.more_info_link{
+    text-decoration: none;
+}
+
+.more_info_link:hover{
+    color: red;
+}
+
+.more_info_hidden{
+    display: none;
 }

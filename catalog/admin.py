@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.template.loader import get_template
 from django.utils.safestring import mark_safe
 
 from catalog.models import *
@@ -101,7 +100,7 @@ class ProductsAdmin(admin.ModelAdmin):
 
     @admin.action(description='Экспортировать в xlsx')
     def export_xlsx(self, request, queryset):
-        print(queryset)
+        pass
 
 
 @admin.register(Details)

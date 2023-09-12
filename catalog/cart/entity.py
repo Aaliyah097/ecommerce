@@ -1,6 +1,3 @@
-from dataclasses import dataclass, asdict
-from typing import Iterator
-
 from django.contrib.sessions.backends.db import SessionStore
 
 

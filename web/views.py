@@ -23,24 +23,24 @@ def index(request):
             'amount': ProductRepository.get_queryset().filter(brand=brand).count()
         })
 
-    return render(request, 'copy_pages/index.html', {
+    return render(request, 'pages/index.html', {
         'brands': brands,
         'categories': categories
     })
 
 
 def contacts_page(request):
-    return render(request, 'copy_pages/contacts.html', {})
+    return render(request, 'pages/contacts.html', {})
 
 
 def about_page(request):
-    return render(request, 'copy_pages/about.html', {})
+    return render(request, 'pages/about.html', {})
 
 
 def catalog_page(request):
     product_filter = ProductFilter(request.GET, queryset=ProductRepository.get_queryset())
 
-    paginator = Paginator(product_filter.qs, 1)
+    paginator = Paginator(product_filter.qs, 10)
     page = request.GET.get('page')
     products_per_page = paginator.get_page(page)
 
@@ -48,7 +48,7 @@ def catalog_page(request):
     if 'page' in query_params:
         del query_params['page']
 
-    return render(request, 'copy_pages/catalog.html', {
+    return render(request, 'pages/catalog.html', {
         'filter': product_filter,
         'page': products_per_page,
         'query_params': '&'.join([f"{key}={value}" for key, value in query_params.items()])
