@@ -149,7 +149,7 @@ class ProductRepository:
         return Products.objects.all().prefetch_related('specs', 'images')
 
     @staticmethod
-    def get_by_id(pk: int) -> Products | None:
+    def get_by_id(pk: int) -> Products:
         try:
             return Products.objects.get(pk=pk)
         except Products.DoesNotExist:
