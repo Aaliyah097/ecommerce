@@ -180,7 +180,8 @@ CELERY_QUEUES = (
 # elasticsearch
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': f"{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}" if DEBUG else f"localhost:{os.environ.get('ELS_PORT')}"
+        # 'hosts': f"{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}" if DEBUG else f"localhost:{os.environ.get('ELS_PORT')}"
+        'hosts': f"{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}"
     },
 }
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
@@ -189,7 +190,8 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch7_backend.Elasticsearch7SearchEngine',
-        'URL': f"http://{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}/" if DEBUG else f"http://localhost:{os.environ.get('ELS_PORT')}/",
+        # 'URL': f"http://{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}/" if DEBUG else f"http://localhost:{os.environ.get('ELS_PORT')}/",
+        'URL': f"http://{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}/",
         'INDEX_NAME': 'haystack',
     },
 }
@@ -202,9 +204,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+STATIC_ROOT = '/static/ecom/'
+MEDIA_URL = '/media/ecom/'
+MEDIA_ROOT = '/media/ecom/'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

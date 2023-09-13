@@ -126,22 +126,22 @@
                     <ul class="ant-menu ant-menu-sub ant-menu-vertical" id="rc-menu-uuid-27873-1-rc-menu-more-popup" data-menu-list="true">
                         <li role="menuitem" tabindex="-1" class="ant-menu-item ant-menu-item-selected ant-menu-item-only-child">
                             <span class="ant-menu-title-content">
-                                <a href="/">Home</a>
+                                <a href="{% url 'index' %}">Главная</a>
                             </span>
                         </li>
                         <li role="menuitem" tabindex="-1" class="ant-menu-item ant-menu-item-only-child">
                             <span class="ant-menu-title-content">
-                                <a href="/catalog">Catalog</a>
+                                <a href="{% url 'catalog' %}">Каталог</a>
                             </span>
                         </li>
                         <li role="menuitem" tabindex="-1" class="ant-menu-item ant-menu-item-only-child">
                             <span class="ant-menu-title-content">
-                                <a href="/about">About us</a>
+                                <a href="{% url 'about' %}">О нас</a>
                             </span>
                         </li>
                         <li role="menuitem" tabindex="-1" class="ant-menu-item ant-menu-item-only-child">
                             <span class="ant-menu-title-content">
-                                <a href="/contacts">Contacts</a>
+                                <a href="{% url 'contacts' %}">Контакты</a>
                             </span>
                         </li>
                     </ul>
