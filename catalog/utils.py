@@ -25,7 +25,7 @@ def get_google_sheet_data() -> dict:
     return requests.get(url).json()
 
 
-def clean_price(price: str) -> float | None:
+def clean_price(price: str) -> float:
     price = str(price).replace('р.', "").replace(",", ".").replace(" ", "").replace("$", "").replace('\xa0', "")
     try:
         return float(price)

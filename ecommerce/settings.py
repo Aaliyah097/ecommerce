@@ -13,7 +13,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = True if platform.system().lower() == 'windows' else False
 
-ALLOWED_HOSTS = ['127.0.0.1', '83.167.124.57', 'gamma-it.ru', ]
+ALLOWED_HOSTS = ['127.0.0.1', '83.167.124.57', 'gamma-it.ru', '0.0.0.0']
 
 # Application definition
 INSTALLED_APPS = [
