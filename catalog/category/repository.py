@@ -31,7 +31,7 @@ class CategoryRepository:
             )
 
     @staticmethod
-    def get_by_slug(slug: str) -> Categories | None:
+    def get_by_slug(slug: str) -> Categories:
         try:
             return Categories.objects.get(slug=slug)
         except Categories.DoesNotExist:
@@ -42,7 +42,7 @@ class CategoryRepository:
         return Categories.objects.all()
 
     @staticmethod
-    def serialize(categories: list[Category] | Category) -> list[dict]:
+    def serialize(categories: Category) -> list[dict]:
         if type(categories) == list:
             return [asdict(cat) for cat in categories]
         else:
