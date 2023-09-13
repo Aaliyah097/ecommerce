@@ -9,6 +9,6 @@ services:
         ports:
             - 8001:8001
         volumes:
-            - ./static/:/srv/www/ecom/static
-            - ./media:/srv/www/ecom/media
+            - /srv/www/ecom/static:./static
+            - /srv/www/ecom/media:./media
         command: "gunicorn ecommerce.wsgi:application --bind 0.0.0.0:8001"
