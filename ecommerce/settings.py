@@ -13,6 +13,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = True if platform.system().lower() == 'windows' else False
 
+
 ALLOWED_HOSTS = ['127.0.0.1', '83.167.124.57', 'gamma-it.ru', '0.0.0.0']
 
 # Application definition
@@ -204,9 +205,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
-STATIC_ROOT = '/static/ecom/'
-MEDIA_URL = '/media/ecom/'
-MEDIA_ROOT = '/media/ecom/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
