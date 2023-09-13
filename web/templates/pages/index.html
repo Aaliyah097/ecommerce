@@ -37,8 +37,8 @@
             <div class="site-card-wrapper">
                 <div class="ant-row" style="margin-left: -8px; margin-right: -8px; row-gap: 16px">
                     {% for cat in categories %}
-                        <div onclick="window.location.href='/catalog/?category={{ cat.category.slug }}'"
-                             class="ant-col ant-col-sm-12 ant-col-md-10 ant-col-lg-6" style="padding-left: 8px; padding-right: 8px;">
+                        <div name="categories_cards" onclick="window.location.href='/catalog/?category={{ cat.category.slug }}'"
+                             class="ant-col ant-col-sm-12 ant-col-md-10 ant-col-lg-6" style="padding-left: 8px; padding-right: 8px; width: 100%">
                             <div class="ant-card ant-card-bordered brand">
                                 <div class="ant-card-head" style="border-bottom:0">
                                     <div class="ant-card-head-wrapper">
@@ -71,10 +71,10 @@
                 индивидуальный подход, мы работаем с людьми, а не с "заказчиками";
                 максимальная скорость обработки заказов; своевременная бесплатная доставка.</p>
             <div class="site-card-wrapper">
-                <div class="ant-row" style="margin-left: -8px; margin-right: -8px; row-gap: 16px">
+                <div class="ant-row" style="margin-left: -8px; margin-right: -8px; row-gap: 16px;">
                     {% for brand in brands %}
                         <div onclick="window.location.href='/catalog/?brand={{ brand.brand.slug }}'"
-                                class="ant-col ant-col-sm-12 ant-col-md-10 ant-col-lg-6" style="padding-left: 8px; padding-right: 8px;">
+                                class="ant-col ant-col-sm-12 ant-col-md-10 ant-col-lg-6" style="padding-left: 8px; padding-right: 8px; width: 100%">
                             <div class="ant-card ant-card-bordered brand">
                                 <div class="ant-card-body">
                                     <img alt="{{ brand.brand.name }}" src="{{ brand.brand.file.url }}" class="brand-image" loading="lazy"

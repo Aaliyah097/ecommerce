@@ -24,9 +24,26 @@
             </div>
         </div>
     </div>
+
+    {% comment %}search form{% endcomment %}
+    <div class="ant-row" style="margin-left:-8px;margin-right:-8px">
+        <div style="padding-left:8px;padding-right:8px" class="ant-col ant-col-24">
+            <form id="search_form" action="{% url 'catalog' %}" method="GET" style="width: 100%">
+                <input placeholder="Я ищу..." class="form-control" id="search_q" name="name" />
+            </form>
+        </div>
+    </div>
+    <br>
+
+    <div class="ant-row" style="margin-left:-8px;margin-right:-8px">
+        <div style="padding-left:8px;padding-right:8px" class="ant-col ant-col-24" id="new-filter-block">
+        </div>
+    </div>
+
     {% comment %}Фильтр{% endcomment %}
     <div class="ant-row" style="margin-left:-8px;margin-right:-8px" id="result">
-        <div style="padding-left:8px;padding-right:8px" class="ant-col ant-col-6">
+        {% comment %}filters block{% endcomment %}
+        <div style="padding-left:8px;padding-right:8px" class="ant-col ant-col-6" id="filter-list-block">
             <form method="get" action="{% url 'catalog' %}#result" id="filter-form">
                 <ul class="ant-menu ant-menu-root ant-menu-inline ant-menu-light VMenu" role="menu" tabindex="0" data-menu-list="true">
                     {% for field in filter.form.visible_fields %}
@@ -48,7 +65,8 @@
             </form>
             <div style="display:none" aria-hidden="true"></div>
         </div>
-        <div style="padding-left:8px;padding-right:8px" class="ant-col ant-col-18">
+    {% comment %}products block{% endcomment %}
+        <div style="padding-left:8px;padding-right:8px" class="ant-col ant-col-18" id="products-list-block">
             <nav class="ant-breadcrumb" style="margin:16px 0;text-transform:uppercase;letter-spacing:1px;font-size:10px;font-weight:600;color:#349bd4">
                 <ol>
                     <li>
@@ -68,10 +86,10 @@
                 <div class="ant-card ant-card-bordered catalogProductCard" onclick="toggle_more_info('product_specs_'+{{ product.pk }})">
                     <div class="ant-card-body">
                         <div class="ant-row">
-                            <div class="ant-col ant-col-lg-20">
-                                <h2 style="font-weight: 500; font-size: 15px; text-transform: uppercase; margin: 5px 0;"><a class="more_info_link" style="font-size: 22px; color: #84C4E4">🛈</a> {{ product.part_number }}</h2>
-                                <h3 style="font-size: 11px; color: rgb(125, 135, 156); text-transform: uppercase; margin: 5px 0;">{{ product.category }} {{ product.brand }}</h3>
-                                <p style="font-size: 12px;">{{ product.name }}</p>
+                            <div class="ant-col ant-col-lg-20" style="width: 100%">
+                                <h2 style="font-weight: 500; font-size: 15px; text-transform: uppercase; margin: 5px 0; width: 100%"><a class="more_info_link">🛈</a> {{ product.part_number }}</h2>
+                                <h3 style="font-size: 11px; color: rgb(125, 135, 156); text-transform: uppercase; margin: 5px 0; width: 100%">{{ product.category }} {{ product.brand }}</h3>
+                                <p style="font-size: 12px; width: 100%">{{ product.name }}</p>
                                 <div class="more_info_hidden" id="product_specs_{{product.pk}}">
                                     {% for spec in product.specs.all %}
                                         <span style="color: darkgray">{{ spec.detail.name }}:<span style="color: black">{{ spec.value }}</span></span><br>

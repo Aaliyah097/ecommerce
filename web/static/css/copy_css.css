@@ -64,13 +64,10 @@ input[name='price_min'], input[name='price_max']{
 }
 
 #search_button{
-    width: auto;
     background-color: #84C4E4;
     outline: none;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-    height: 75%;
-    margin-top: 0.8%;
     text-align: center;
     align-items: center;
     display: flex;
@@ -88,15 +85,12 @@ input[name='price_min'], input[name='price_max']{
 }
 
 #search_q{
-    padding-left: 2%;
-    width: 44.5vw;
-    height: 75%;
-    margin: 0.8% 0 0 3.5%;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
+    border-radius: 5px;
     font-size: 16px;
-    border: 2px solid #84C4E4;
-    border-right: 0 solid #84C4E4;
+    border: 1px solid #84C4E4;
+    height: 100%;
+    width: 100%;
+    padding-left: 1%;
 }
 
 .ui-menu-item-wrapper:hover{
@@ -124,10 +118,12 @@ input[name='price_min'], input[name='price_max']{
 
 .more_info_link{
     text-decoration: none;
+    font-size: 22px;
+    color: #84C4E4;
 }
 
 .more_info_link:hover{
-    color: red;
+    color: #349BD4;
 }
 
 .more_info_hidden{
