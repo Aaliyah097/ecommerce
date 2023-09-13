@@ -10,7 +10,7 @@ class CartView(APIView):
     renderer_classes = [JSONRenderer, ]
 
     @staticmethod
-    def get_cart_item(product_id: int) -> CartItem | None:
+    def get_cart_item(product_id: int) -> CartItem:
         product = ProductRepository.get_by_id(product_id)
 
         if not product:
