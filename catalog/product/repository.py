@@ -101,7 +101,7 @@ class ProductFilter(django_filters.FilterSet):
             details = Details.objects.filter(pk__in=details_pks)
             brands = Brands.objects.filter(slug__in=brands_pks)
         else:
-            details = Details.objects.all()
+            details = []
             brands = Brands.objects.all()
 
         if brand:

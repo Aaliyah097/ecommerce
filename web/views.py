@@ -51,5 +51,5 @@ def catalog_page(request):
     return render(request, 'pages/catalog.html', {
         'filter': product_filter,
         'page': products_per_page,
-        'query_params': '&'.join([f"{key}={value}" for key, value in query_params.items()])
+        'query_params': '&'.join([f"{key}={value}" for key, value in query_params.items()]),
     })
