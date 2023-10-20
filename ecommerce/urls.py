@@ -19,7 +19,6 @@ schema_view = get_schema_view(
     public=True,
 )
 
-
 urlpatterns = [
     path('dashboard/', admin.site.urls),
     path('catalog/', include((catalog_urls, 'catalog'), namespace='catalog')),

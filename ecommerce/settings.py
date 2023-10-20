@@ -14,7 +14,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True if platform.system().lower() == 'windows' else False
 
 
-ALLOWED_HOSTS = ['127.0.0.1', '83.167.124.57', 'gamma-it.ru', '0.0.0.0']
+ALLOWED_HOSTS = ['127.0.0.1', '77.37.150.254', 'gamma-it.ru', '0.0.0.0']
 
 # Application definition
 INSTALLED_APPS = [
@@ -79,18 +79,18 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
 # Database
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
     # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #     'NAME': os.environ.get('DB_NAME'),
-    #     'HOST': os.environ.get('DB_HOST'),
-    #     'PORT': os.environ.get('DB_PORT'),
-    #     'USER': os.environ.get('DB_USER'),
-    #     'PASSWORD': os.environ.get('DB_PASSWORD'),
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('DB_NAME'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+    }
 }
 
 # Password validation
@@ -181,17 +181,16 @@ CELERY_QUEUES = (
 # elasticsearch
 ELASTICSEARCH_DSL = {
     'default': {
-        # 'hosts': f"{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}" if DEBUG else f"localhost:{os.environ.get('ELS_PORT')}"
         'hosts': f"{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}"
     },
 }
+
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 # haystack
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch7_backend.Elasticsearch7SearchEngine',
-        # 'URL': f"http://{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}/" if DEBUG else f"http://localhost:{os.environ.get('ELS_PORT')}/",
         'URL': f"http://{os.environ.get('ELS_HOST')}:{os.environ.get('ELS_PORT')}/",
         'INDEX_NAME': 'haystack',
     },

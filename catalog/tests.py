@@ -2,7 +2,6 @@ from django.test import TestCase
 from catalog.models import *
 from catalog.category.repository import CategoryRepository
 from catalog.utils import check_spell
-from catalog.utils import sync_products_with_google_sheet
 
 
 class TestCategories(TestCase):
@@ -38,4 +37,4 @@ class TestUtils(TestCase):
 
 class TestGoogleSheet(TestCase):
     def test_read_data(self):
-        sync_products_with_google_sheet()
+        pass

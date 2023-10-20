@@ -21,10 +21,12 @@ class CategoriesAdmin(DraggableMPTTAdmin):
     mptt_indent_field = "name"
     list_display = ('tree_actions', 'indented_title',
                     'related_products_count', 'related_products_cumulative_count',
-                    'name', 'slug')
+                    'name', 'slug', 'is_hidden')
+    list_editable = ('is_hidden', )
     prepopulated_fields = {'slug': ('name',)}
     list_filter = (
         ('parent', TreeRelatedFieldListFilter),
+        'is_hidden'
     )
     search_fields = ('name', )
     search_help_text = 'Поиск по Заголовку'
@@ -66,7 +68,8 @@ class BrandsAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     search_help_text = 'Поиск по Названию'
     list_display_links = ['slug', ]
-    list_editable = ['name', 'file']
+    list_editable = ['name', 'file', 'is_hidden']
+    list_filter = ['is_hidden', ]
 
 
 class ImagesAdmin(admin.TabularInline):
@@ -81,7 +84,7 @@ class SpecsAdmin(admin.TabularInline):
 
 @admin.register(Products)
 class ProductsAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Products._meta.fields]
+    list_display = [field.name for field in Products._meta.fields if field.name not in ['description', 'image_link', 'source_link', 'series']]
     list_editable = ['part_number', 'price', 'category', 'name', 'brand', 'currency']
     inlines = [
         SpecsAdmin,
@@ -94,7 +97,8 @@ class ProductsAdmin(admin.ModelAdmin):
         'category',
         ('price', NumericRangeFilterBuilder()),
         'specs',
-        'currency'
+        'currency',
+        'source',
     )
     actions = ['export_xlsx', ]
 
@@ -106,7 +110,7 @@ class ProductsAdmin(admin.ModelAdmin):
 @admin.register(Details)
 class DetailsAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Details._meta.fields]
-
+    search_fields = ['name', ]
     list_editable = ['name', ]
 
 
@@ -137,7 +141,7 @@ class OrdersAdmin(admin.ModelAdmin):
 
     def get_items(self, obj):
         items = OrderItems.objects.filter(order=obj)
-        return mark_safe('<br><br>'.join([f"{item.product.category.name} {item.product.brand.name} {item.product.part_number} {item.amount} шт." for item in items]))
+        return mark_safe('<br><br>'.join([f"{item.product.category.name if item.product.category else None} {item.product.brand.name if item.product.brand else None} {item.product.part_number if item.product else None} {item.amount if item else None} шт." for item in items]))
 
     get_items.short_description = "Товары в заказе"
     get_total_cost.short_description = "Итого"

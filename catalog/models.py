@@ -53,6 +53,8 @@ class Categories(MPTTModel):
                              upload_to='categories/',
                              null=True,
                              blank=True)
+    is_hidden = models.BooleanField(verbose_name='Скрытая',
+                                    default=False, blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('catalog:categories-detail', kwargs={'pk': self.slug})
@@ -104,6 +106,8 @@ class Brands(models.Model):
                              blank=True)
     description = models.TextField(verbose_name='Описание',
                                    default=None, blank=True, null=True)
+    is_hidden = models.BooleanField(verbose_name='Скрытый',
+                                    default=False, blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('catalog:brands-detail', kwargs={'pk': self.slug})
@@ -154,6 +158,26 @@ class Products(models.Model):
                                    default=None,
                                    blank=True,
                                    null=True)
+    source = models.CharField(verbose_name='Источник данных',
+                              max_length=150,
+                              default=None,
+                              blank=True,
+                              null=True)
+    source_link = models.CharField(verbose_name='Карточка товара',
+                                   max_length=500,
+                                   default=None,
+                                   blank=True,
+                                   null=True)
+    series = models.CharField(verbose_name='Серия',
+                              max_length=150,
+                              default=None,
+                              blank=True,
+                              null=True)
+    image_link = models.CharField(verbose_name='Ссылка на фото',
+                                  max_length=500,
+                                  default=None,
+                                  blank=True,
+                                  null=True)
 
     def __str__(self):
         return self.name
@@ -197,6 +221,11 @@ class Images(models.Model):
                                 related_name='images')
     file = models.ImageField(verbose_name='Фото',
                              upload_to='photos/')
+    image_link = models.CharField(verbose_name='Ссылка на фото',
+                                  max_length=500,
+                                  default=None,
+                                  blank=True,
+                                  null=True)
 
     def __str__(self):
         return self.file.name

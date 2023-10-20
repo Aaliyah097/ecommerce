@@ -150,6 +150,6 @@ function toggle_more_info(pk){
 }
 
 
-// filter_listen();
+filter_listen();
 color_menu_links();
 filter_toggle();

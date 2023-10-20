@@ -56,6 +56,22 @@ class ProductFilter(django_filters.FilterSet):
         widget=forms.HiddenInput(),
         field_name='part_number'
     )
+    source = django_filters.CharFilter(
+        widget=forms.HiddenInput(),
+        field_name='source'
+    )
+    source_link = django_filters.CharFilter(
+        widget=forms.HiddenInput(),
+        field_name='source_link'
+    )
+    series = django_filters.CharFilter(
+        widget=forms.HiddenInput(),
+        field_name='series'
+    )
+    image_link = django_filters.CharFilter(
+        widget=forms.HiddenInput(),
+        field_name='image_link'
+    )
 
     @staticmethod
     def filter_by_price(queryset, name, value):
@@ -99,16 +115,19 @@ class ProductFilter(django_filters.FilterSet):
             brands_pks = Products.objects.filter(category__slug=category).values_list('brand__slug')
 
             details = Details.objects.filter(pk__in=details_pks)
-            brands = Brands.objects.filter(slug__in=brands_pks)
+            brands = Brands.objects.filter(slug__in=brands_pks, is_hidden=False)
         else:
             details = []
-            brands = Brands.objects.all()
+            brands = Brands.objects.filter(is_hidden=False)
 
         if brand:
             categories_pks = Products.objects.filter(brand__slug=brand).values_list('category__slug')
-            categories = Categories.objects.filter(slug__in=categories_pks)
+            categories = Categories.objects.filter(slug__in=categories_pks, is_hidden=False)
         else:
-            categories = Categories.objects.all()
+            if category:
+                categories = Categories.objects.filter(parent=category, is_hidden=False)
+            else:
+                categories = Categories.objects.filter(is_hidden=False, parent__isnull=True)
 
         # Выводи только те категории, которые присущи товарам выбранного бренда
         self.filters['category'] = django_filters.ModelMultipleChoiceFilter(
@@ -131,6 +150,15 @@ class ProductFilter(django_filters.FilterSet):
         # Выводим только те характеристики и их свойства, которые присущи товарарам в выбранной категории
         for detail in details:
             specs = Specs.objects.filter(detail=detail)
+            specs_ids = []
+            specs_values = []
+            for spec in specs:
+                if spec.value in specs_values:
+                    continue
+                specs_values.append(spec.value)
+                specs_ids.append(spec.id)
+            specs = specs.filter(id__in=specs_ids)
+
             self.filters[detail.name] = django_filters.ModelMultipleChoiceFilter(
                 field_name='specs__pk',
                 queryset=specs,

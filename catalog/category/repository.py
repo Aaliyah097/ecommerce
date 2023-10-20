@@ -30,6 +30,17 @@ class CategoryRepository:
                 file=model.file.path if model.file else None
             )
 
+    def get_back_chain(self, slug: str) -> list[Categories]:
+        category = self.get_by_slug(slug)
+        if not category:
+            return []
+        chain = [category]
+        parent = category.parent
+        while parent:
+            chain.insert(0, parent)
+            parent = parent.parent
+        return chain
+
     @staticmethod
     def get_by_slug(slug: str) -> Categories:
         try:

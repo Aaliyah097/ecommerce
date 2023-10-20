@@ -43,7 +43,10 @@ def update_rates(products: list[Products]):
     except Currencies.DoesNotExist:
         currency = None
 
-    daily_rates = ExchangeRates(str(datetime.date.today()))
+    try:
+        daily_rates = ExchangeRates(str(datetime.date.today()))
+    except ConnectionError:
+        daily_rates = 1
 
     if currency:
         for product in products:

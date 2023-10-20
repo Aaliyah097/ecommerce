@@ -9,7 +9,7 @@ from catalog.category.repository import CategoryRepository
 def index(request):
     categories = []
 
-    for cat in CategoryRepository.get_queryset():
+    for cat in CategoryRepository.get_queryset().filter(parent__isnull=True, is_hidden=False):
         categories.append({
             'category': cat,
             'amount': ProductRepository.get_queryset().filter(category=cat).count()
@@ -17,7 +17,7 @@ def index(request):
 
     brands = []
 
-    for brand in BrandRepository.get_queryset():
+    for brand in BrandRepository.get_queryset().filter(is_hidden=False):
         brands.append({
             'brand': brand,
             'amount': ProductRepository.get_queryset().filter(brand=brand).count()
@@ -40,6 +40,9 @@ def about_page(request):
 def catalog_page(request):
     product_filter = ProductFilter(request.GET, queryset=ProductRepository.get_queryset())
 
+    category = request.GET.get('category', None)
+    chain = CategoryRepository().get_back_chain(category)
+
     paginator = Paginator(product_filter.qs, 10)
     page = request.GET.get('page')
     products_per_page = paginator.get_page(page)
@@ -52,4 +55,6 @@ def catalog_page(request):
         'filter': product_filter,
         'page': products_per_page,
         'query_params': '&'.join([f"{key}={value}" for key, value in query_params.items()]),
+        'breadcrumbs': chain,
+        'category': category
     })
