@@ -1,12 +1,22 @@
+from django import forms
 from rest_framework import serializers
 from django.db.models import QuerySet
 import django_filters
+from ckeditor.widgets import CKEditorWidget
 
 from catalog.models import Categories
 from catalog.category.entity import Category
 from functools import cache
 from typing import List
 from dataclasses import asdict
+
+
+class CategoryForm(forms.ModelForm):
+    description = forms.CharField(widget=CKEditorWidget())
+
+    class Meta:
+        model = Categories
+        fields = '__all__'
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -27,7 +37,9 @@ class CategoryRepository:
                 name=model.name,
                 slug=model.slug,
                 children=self.get_children(model),
-                file=model.file.path if model.file else None
+                file=model.file.path if model.file else None,
+                description=model.description,
+                image_link=model.image_link,
             )
 
     def get_back_chain(self, slug: str) -> list[Categories]:

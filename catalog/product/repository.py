@@ -1,5 +1,9 @@
+import datetime
+from copy import deepcopy
+
 from django import forms
-from django.db.models import QuerySet, Min, Max
+from django.db.models import QuerySet, Min, Max, F
+from pycbrf import ExchangeRates
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 import django_filters
 
@@ -31,9 +35,16 @@ class ProductSerializer(ModelSerializer):
 
 
 class ProductFilter(django_filters.FilterSet):
-    price = django_filters.RangeFilter(
+    price = django_filters.NumberFilter(
         field_name='price',
+        lookup_expr='lte',
+        label='Цена до',
+        method='filter_price'
     )
+    # price = django_filters.NumberFilter(
+    #     field_name='price',
+    #     widget=forms.HiddenInput()
+    # )
     order_by_price = django_filters.ChoiceFilter(
         method='filter_by_price',
         label='Упорядочить по цене',
@@ -53,8 +64,9 @@ class ProductFilter(django_filters.FilterSet):
         field_name='description'
     )
     part_number = django_filters.CharFilter(
-        widget=forms.HiddenInput(),
-        field_name='part_number'
+        widget=forms.TextInput(),
+        field_name='part_number',
+        lookup_expr='iexact'
     )
     source = django_filters.CharFilter(
         widget=forms.HiddenInput(),
@@ -64,14 +76,47 @@ class ProductFilter(django_filters.FilterSet):
         widget=forms.HiddenInput(),
         field_name='source_link'
     )
-    series = django_filters.CharFilter(
-        widget=forms.HiddenInput(),
-        field_name='series'
-    )
     image_link = django_filters.CharFilter(
         widget=forms.HiddenInput(),
         field_name='image_link'
     )
+    category = django_filters.CharFilter(
+        field_name='category',
+        label='Категории',
+        method='filter_category_name'
+    )
+
+    def filter_price(self, queryset, name, value):
+        rate = float(ExchangeRates(str(datetime.date.today()))['USD'].rate)
+        not_in = []
+        for q in queryset:
+            if q.price * rate <= value:
+                not_in.append(q.pk)
+        return queryset.filter(pk__in=not_in)
+
+    def filter_brand_name(self, queryset, name, value):
+        value = value.replace("[", "").replace("]", "").replace("'", "")
+        value = value.split(",")
+
+        for v in value:
+            if v != '':
+                break
+        else:
+            return queryset
+
+        return queryset.filter(brand__slug=value)
+
+    def filter_category_name(self, queryset, name, value):
+        value = value.replace("[", "").replace("]", "").replace("'", "")
+        value = value.split(",")
+        for v in value:
+            if v != '':
+                break
+        else:
+            return queryset.filter(category__parent__isnull=True)
+
+        return queryset.filter(
+            category__in=Categories.objects.filter(slug__in=value).get_descendants(include_self=True))
 
     @staticmethod
     def filter_by_price(queryset, name, value):
@@ -81,90 +126,6 @@ class ProductFilter(django_filters.FilterSet):
             return queryset.order_by('-price')
         else:
             return queryset
-
-    def filter_queryset(self, queryset):
-        qs = update_rates(super().filter_queryset(queryset))
-
-        if len(qs) != 0:
-            min_price = min(qs, key=lambda p: p.price).price
-            max_price = max(qs, key=lambda p: p.price).price
-        else:
-            min_price = 0
-            max_price = 0
-
-        # добавлять в поля фильтра по цене минимальную и максимальную цены товаров в выборке
-        self.form.fields['price'].widget.widgets[0].attrs['placeholder'] = f"от {min_price}"
-        self.form.fields['price'].widget.widgets[1].attrs['placeholder'] = f"до {max_price}"
-
-        return qs
-
-    def __init__(self, *args, **kwargs):
-        try:
-            category = args[0].get('category', None)
-        except IndexError:
-            category = None
-        try:
-            brand = args[0].get('brand', None)
-        except IndexError:
-            brand = None
-
-        super(ProductFilter, self).__init__(*args, **kwargs)
-
-        if category:
-            details_pks = Specs.objects.filter(product__category__slug=category).values_list('detail__pk')
-            brands_pks = Products.objects.filter(category__slug=category).values_list('brand__slug')
-
-            details = Details.objects.filter(pk__in=details_pks)
-            brands = Brands.objects.filter(slug__in=brands_pks, is_hidden=False)
-        else:
-            details = []
-            brands = Brands.objects.filter(is_hidden=False)
-
-        if brand:
-            categories_pks = Products.objects.filter(brand__slug=brand).values_list('category__slug')
-            categories = Categories.objects.filter(slug__in=categories_pks, is_hidden=False)
-        else:
-            if category:
-                categories = Categories.objects.filter(parent=category, is_hidden=False)
-            else:
-                categories = Categories.objects.filter(is_hidden=False, parent__isnull=True)
-
-        # Выводи только те категории, которые присущи товарам выбранного бренда
-        self.filters['category'] = django_filters.ModelMultipleChoiceFilter(
-            field_name='category',
-            label='Категории',
-            queryset=categories,
-            to_field_name='slug',
-            widget=forms.CheckboxSelectMultiple(attrs={'class': 'checkbox-list'}),
-        )
-
-        # Выводим только те бренды, которые присущи выбранной категории
-        self.filters['brand'] = django_filters.ModelMultipleChoiceFilter(
-            field_name='brand',
-            label='Производитель',
-            queryset=brands,
-            to_field_name='slug',
-            widget=forms.CheckboxSelectMultiple(attrs={'class': 'checkbox-list'}),
-        )
-
-        # Выводим только те характеристики и их свойства, которые присущи товарарам в выбранной категории
-        for detail in details:
-            specs = Specs.objects.filter(detail=detail)
-            specs_ids = []
-            specs_values = []
-            for spec in specs:
-                if spec.value in specs_values:
-                    continue
-                specs_values.append(spec.value)
-                specs_ids.append(spec.id)
-            specs = specs.filter(id__in=specs_ids)
-
-            self.filters[detail.name] = django_filters.ModelMultipleChoiceFilter(
-                field_name='specs__pk',
-                queryset=specs,
-                to_field_name='pk',
-                widget=forms.CheckboxSelectMultiple(attrs={'class': 'checkbox-list'}),
-            )
 
     class Meta:
         model = Products

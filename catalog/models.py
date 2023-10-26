@@ -1,9 +1,10 @@
 from django.db import models
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
 from django.urls import reverse
 
 from mptt.models import MPTTModel, TreeForeignKey
+from ckeditor.fields import RichTextField
 
 
 class Currencies(models.Model):
@@ -53,8 +54,20 @@ class Categories(MPTTModel):
                              upload_to='categories/',
                              null=True,
                              blank=True)
+    image_link = models.CharField(verbose_name='Ссылка на Лого',
+                                  max_length=500,
+                                  default=None,
+                                  blank=True,
+                                  null=True)
     is_hidden = models.BooleanField(verbose_name='Скрытая',
-                                    default=False, blank=True, null=True)
+                                    default=False,
+                                    blank=True,
+                                    null=True)
+
+    description = RichTextField(verbose_name='Описание',
+                                default=None,
+                                blank=True,
+                                null=True)
 
     def get_absolute_url(self):
         return reverse('catalog:categories-detail', kwargs={'pk': self.slug})
@@ -62,17 +75,20 @@ class Categories(MPTTModel):
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        slug_path = [self.slug]
-
-        current_parent = self.parent
-        while current_parent:
-            slug_path.insert(0, current_parent.slug)
-            current_parent = current_parent.parent
-
-        self.slug = '-'.join(slug_path)
-
-        super(Categories, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     slug_path = [self.slug]
+    #
+    #     current_parent = self.parent
+    #     if current_parent.slug in self.slug:
+    #         return
+    #
+    #     while current_parent:
+    #         slug_path.insert(0, current_parent.slug)
+    #         current_parent = current_parent.parent
+    #
+    #     self.slug = '-'.join(slug_path)
+    #
+    #     super().save(*args, **kwargs)
 
     class MPTTMeta:
         order_insertion_by = ['name']
@@ -104,6 +120,11 @@ class Brands(models.Model):
                              upload_to='brands/',
                              null=True,
                              blank=True)
+    image_link = models.CharField(verbose_name='Ссылка на Лого',
+                                  max_length=500,
+                                  default=None,
+                                  blank=True,
+                                  null=True)
     description = models.TextField(verbose_name='Описание',
                                    default=None, blank=True, null=True)
     is_hidden = models.BooleanField(verbose_name='Скрытый',
@@ -131,8 +152,7 @@ def delete_brand_file(sender, instance, **kwargs):
 
 class Products(models.Model):
     name = models.CharField(verbose_name='Название',
-                            max_length=500,
-                            db_index=True)
+                            max_length=1000)
     category = models.ForeignKey(Categories,
                                  null=True,
                                  verbose_name='Категория',
@@ -186,7 +206,7 @@ class Products(models.Model):
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
         db_table = 'products'
-        ordering = ('-id', )
+        ordering = ('series', )
 
         unique_together = ('part_number', 'brand')
 

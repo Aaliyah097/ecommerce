@@ -30,7 +30,7 @@
     <div class="ant-row" style="margin-left:-8px;margin-right:-8px">
         <div style="padding-left:8px;padding-right:8px" class="ant-col ant-col-24">
             <form id="search_form" action="{% url 'catalog' %}" method="GET" style="width: 100%">
-                <input placeholder="Парт. номер или название" class="form-control" id="search_q" name="name" />
+                <input placeholder="Искать по парт. номеру" class="form-control" id="search_q" name="name" />
             </form>
         </div>
     </div>
@@ -47,58 +47,140 @@
         <div style="padding-left:8px;padding-right:8px" class="ant-col ant-col-6" id="filter-list-block">
             <form method="get" action="{% url 'catalog' %}#result" id="filter-form">
                 <ul class="ant-menu ant-menu-root ant-menu-inline ant-menu-light VMenu" role="menu" tabindex="0" data-menu-list="true">
-                    {% for field in filter.form.visible_fields %}
-                        <li class="ant-menu-submenu ant-menu-submenu-inline" role="none">
-                            <div role="menuitem" class="ant-menu-submenu-title" tabindex="-1" aria-expanded="false" aria-haspopup="true" style="padding-left: 24px;">
-                                <span class="ant-menu-title-content">{{ field.label }}</span>
-                                <i class="ant-menu-submenu-arrow"></i>
-                            </div>
-                            <ul class="ant-menu ant-menu-sub ant-menu-inline ant-menu-hidden">
-                                {% for f in field %}
+                    {% comment %}categories filter{% endcomment %}
+                    <li class="ant-menu-submenu ant-menu-submenu-inline" role="none">
+                        <div role="menuitem" class="ant-menu-submenu-title" tabindex="-1" aria-expanded="false" aria-haspopup="true" style="padding-left: 24px;">
+                            <span class="ant-menu-title-content">Категория</span>
+                            <i class="ant-menu-submenu-arrow"></i>
+                        </div>
+                        <ul class="ant-menu ant-menu-sub ant-menu-inline">
+                            <li role="menuitem" tabindex="-1" class="ant-menu-item ant-menu-item-only-child" style="display: none">
+                                <span class="ant-menu-title-content">
+                                    <input checked type="radio" name="category" value="{{ category.slug }}" class="checkbox-list">
+                                </span>
+                            </li>
+                            {% for cat in filters.categories %}
                                 <li role="menuitem" tabindex="-1" class="ant-menu-item ant-menu-item-only-child" style="padding-left: 48px; height: auto">
-                                    <span class="ant-menu-title-content">{{ f }}</span>
+                                    <span class="ant-menu-title-content">
+                                        {% if cat.slug == request.GET.category %}
+                                            <input checked type="radio" name="category" value="{{ cat.slug }}" class="checkbox-list">
+                                        {% else %}
+                                            <input type="radio" name="category" value="{{ cat.slug }}" class="checkbox-list">
+                                        {% endif %}
+                                        {{ cat.name }}
+                                    </span>
                                 </li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% comment %}brands filter{% endcomment %}
+                    <li class="ant-menu-submenu ant-menu-submenu-inline" role="none">
+                        <div role="menuitem" class="ant-menu-submenu-title" tabindex="-1" aria-expanded="false" aria-haspopup="true" style="padding-left: 24px;">
+                            <span class="ant-menu-title-content">Бренд</span>
+                            <i class="ant-menu-submenu-arrow"></i>
+                        </div>
+                        <ul class="ant-menu ant-menu-sub ant-menu-inline">
+                            <li role="menuitem" tabindex="-1" class="ant-menu-item ant-menu-item-only-child" style="padding-left: 48px; height: auto">
+                                <span class="ant-menu-title-content">
+                                    <input checked type="radio" name="brand" value="" class="checkbox-list">
+                                    Все
+                                </span>
+                            </li>
+                            {% for brand in filters.brands %}
+                                <li role="menuitem" tabindex="-1" class="ant-menu-item ant-menu-item-only-child" style="padding-left: 48px; height: auto">
+                                    <span class="ant-menu-title-content">
+                                        {% if brand.slug == request.GET.brand %}
+                                            <input checked type="radio" name="brand" value="{{ brand.slug }}" class="checkbox-list">
+                                        {% else %}
+                                            <input type="radio" name="brand" value="{{ brand.slug }}" class="checkbox-list">
+                                        {% endif %}
+                                        {{ brand.name }}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% comment %}series filter{% endcomment %}
+                    <li class="ant-menu-submenu ant-menu-submenu-inline" role="none">
+                        <div role="menuitem" class="ant-menu-submenu-title" tabindex="-1" aria-expanded="false" aria-haspopup="true" style="padding-left: 24px;">
+                            <span class="ant-menu-title-content">Серия</span>
+                            <i class="ant-menu-submenu-arrow"></i>
+                        </div>
+                        <ul class="ant-menu ant-menu-sub ant-menu-inline">
+                            <li role="menuitem" tabindex="-1" class="ant-menu-item ant-menu-item-only-child" style="padding-left: 48px; height: auto">
+                                <span class="ant-menu-title-content">
+                                    <input checked type="radio" name="series" value="" class="checkbox-list">
+                                    Все
+                                </span>
+                            </li>
+                            {% for series in filters.series %}
+                                <li role="menuitem" tabindex="-1" class="ant-menu-item ant-menu-item-only-child" style="padding-left: 48px; height: auto">
+                                    <span class="ant-menu-title-content">
+                                        {% if series == request.GET.series %}
+                                            <input checked type="radio" name="series" value="{{ series }}" class="checkbox-list">
+                                        {% else %}
+                                            <input type="radio" name="series" value="{{ series }}" class="checkbox-list">
+                                        {% endif %}
+                                        {{ series }}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% comment %}order by price{% endcomment %}
+                    <li class="ant-menu-submenu ant-menu-submenu-inline" role="none">
+                        <div role="menuitem" class="ant-menu-submenu-title" tabindex="-1" aria-expanded="false" aria-haspopup="true" style="padding-left: 24px;">
+                            <span class="ant-menu-title-content">Цена ⇅</span>
+                            <i class="ant-menu-submenu-arrow"></i>
+                        </div>
+                        <ul class="ant-menu ant-menu-sub ant-menu-inline">
+                            <li role="menuitem" tabindex="-1" class="ant-menu-item ant-menu-item-only-child" style="padding-left: 48px; height: auto">
+                                <span class="ant-menu-title-content">
+                                    {{ filter.form.order_by_price }}
+                                </span>
+                            </li>
+                        </ul>
+                    </li>
+                {% comment %}filter by top price{% endcomment %}
+                    <li class="ant-menu-submenu ant-menu-submenu-inline" role="none">
+                        <div role="menuitem" class="ant-menu-submenu-title" tabindex="-1" aria-expanded="false" aria-haspopup="true" style="padding-left: 24px;">
+                            <span class="ant-menu-title-content">Цена до</span>
+                            <i class="ant-menu-submenu-arrow"></i>
+                        </div>
+                        <ul class="ant-menu ant-menu-sub ant-menu-inline">
+                            <li role="menuitem" tabindex="-1" class="ant-menu-item ant-menu-item-only-child" style="padding-left: 48px; height: auto">
+                                <span class="ant-menu-title-content">
+                                    {{ filter.form.price }}
+                                </span>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
                 <br>
                 <button class="btn btn-gamma-info" type="submit">Применить</button>
             </form>
             <div style="display:none" aria-hidden="true"></div>
         </div>
-    {% comment %}products block{% endcomment %}
+        {% comment %}products block{% endcomment %}
         <div style="padding-left:8px;padding-right:8px" class="ant-col ant-col-18" id="products-list-block">
             <nav class="ant-breadcrumb" style="margin:16px 0;text-transform:uppercase;letter-spacing:1px;font-size:10px;font-weight:600;color:#349bd4">
                 <ol>
+                    <li>
+                        <span class="ant-breadcrumb-link">
+                            {% replace_category request.get_full_path '' as new_url %}
+                            <a href="{{ new_url }}">Каталог</a>
+                        </span>
+                        <span class="ant-breadcrumb-separator">/</span>
+                    </li>
+                    {% for crumb in breadcrumbs %}
                         <li>
                             <span class="ant-breadcrumb-link">
-                                {% replace_category request.get_full_path '' as new_url %}
-                                    <a href="{{ new_url }}">Каталог</a>
+                                {% replace_category request.get_full_path crumb.slug as new_url %}
+                                <a href="{{ new_url }}">{{ crumb.name }}</a>
                             </span>
                             <span class="ant-breadcrumb-separator">/</span>
                         </li>
-                        {% for crumb in breadcrumbs %}
-                            <li>
-                                <span class="ant-breadcrumb-link">
-                                    {% replace_category request.get_full_path crumb.slug as new_url %}
-                                    <a href="{{ new_url }}">{{ crumb.name }}</a>
-                                </span>
-                            <span class="ant-breadcrumb-separator">/</span>
-                            </li>
-                        {% endfor %}
-{#                    <li>#}
-{#                        <span class="ant-breadcrumb-link">#}
-{#                            <a>Товаров {{ page.paginator.count }}</a>#}
-{#                        </span>#}
-{#                        <span class="ant-breadcrumb-separator">/</span>#}
-{#                    </li>#}
-{#                    <li>#}
-{#                        <span class="ant-breadcrumb-link">#}
-{#                            <a>Страниц {{ page.paginator.page_range|length }}</a>#}
-{#                        </span>#}
-{#                    </li>#}
+                    {% endfor %}
                 </ol>
             </nav>
             {% for product in page %}
@@ -110,16 +192,16 @@
                             </div>
                             <div class="ant-col ant-col-lg-12">
                                 <h2 style="font-weight: 500; font-size: 15px; text-transform: uppercase; margin: 5px 0; width: 100%"><a class="more_info_link">🛈</a> {{ product.part_number }}</h2>
-                                <h3 style="font-size: 11px; color: rgb(125, 135, 156); text-transform: uppercase; margin: 5px 0; width: 100%">{{ product.category }} {{ product.brand }}</h3>
+                                <h3 style="font-size: 11px; color: rgb(125, 135, 156); text-transform: uppercase; margin: 5px 0; width: 100%">
+{#                                    {{ product.category }}#}
+                                    <strong>{{ product.brand }}</strong>
+                                    {{ product.series }}</h3>
                                 <p style="font-size: 12px; width: 100%; word-wrap: break-word">{{ product.name }}</p>
-{#                                <div class="more_info_hidden" id="product_specs_{{product.pk}}">#}
-{#                                    {% for spec in product.specs.all %}#}
-{#                                        <span style="color: darkgray">{{ spec.detail.name }}:<span style="color: black">{{ spec.value }}</span></span><br>#}
-{#                                    {% endfor %}#}
-{#                                </div>#}
                             </div>
                             <div class="ant-col ant-col-lg-7" style="width: 100%">
-                                <div style="display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500; height: 100%; color: rgb(52, 155, 212); float: right;">{{ product.currency.symbol }} {{ product.price|split_number }}</div>
+                                <div style="display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500; height: 100%; color: rgb(52, 155, 212); float: right;">
+                                    {{ currency.symbol }} {% multiply product.price usd_rub %}
+                                </div>
                             </div>
                         </div>
                     </div>

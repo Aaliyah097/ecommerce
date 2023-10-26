@@ -24,7 +24,7 @@ function filter_listen(){
 $(function () {
     $("#search_q").autocomplete({
         source: "/catalog/products/autocomplete/",
-        minLength: 2,
+        minLength: 1,
         delay: 100,
     });
 });

@@ -2,8 +2,10 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from catalog.models import *
+from catalog.category.repository import CategoryForm
 
 from mptt.admin import DraggableMPTTAdmin, TreeRelatedFieldListFilter
+from django.contrib.admin import DateFieldListFilter
 from rangefilter.filters import (
     NumericRangeFilterBuilder,
 )
@@ -30,6 +32,7 @@ class CategoriesAdmin(DraggableMPTTAdmin):
     )
     search_fields = ('name', )
     search_help_text = 'Поиск по Заголовку'
+    form = CategoryForm
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -68,7 +71,7 @@ class BrandsAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     search_help_text = 'Поиск по Названию'
     list_display_links = ['slug', ]
-    list_editable = ['name', 'file', 'is_hidden']
+    list_editable = ['name', 'file', 'is_hidden', 'image_link']
     list_filter = ['is_hidden', ]
 
 
@@ -84,14 +87,14 @@ class SpecsAdmin(admin.TabularInline):
 
 @admin.register(Products)
 class ProductsAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Products._meta.fields if field.name not in ['description', 'image_link', 'source_link', 'series']]
-    list_editable = ['part_number', 'price', 'category', 'name', 'brand', 'currency']
+    list_display = [field.name for field in Products._meta.fields if field.name not in ['description', 'image_link', 'source_link']]
+    # list_editable = ['part_number', 'price', 'category', 'name', 'brand', 'currency', ]
     inlines = [
         SpecsAdmin,
         ImagesAdmin
     ]
-    search_fields = ('name', 'part_number')
-    search_help_text = 'Поиск по Названию или Парт. номеру'
+    search_fields = ('part_number', 'series', 'id')
+    search_help_text = 'Поиск по Названию, Серии или Парт. номеру'
     list_filter = (
         'brand',
         'category',

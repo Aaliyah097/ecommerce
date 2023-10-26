@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'ckeditor',
     'corsheaders',
     'haystack',
     'django_elasticsearch_dsl',
@@ -221,3 +222,7 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 EMAIL_PORT = os.environ.get('EMAIL_PORT')
 EMAIL_USE_TLS = True
+
+
+# CKEDITOR
+CKEDITOR_UPLOAD_PATH = "uploads/"

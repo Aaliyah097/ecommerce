@@ -129,3 +129,10 @@ input[name='price_min'], input[name='price_max']{
 .more_info_hidden{
     display: none;
 }
+
+#result input[type="text"]{
+  width: 90%;
+}
+#result input[type="number"]{
+  width: 85%;
+}

@@ -37,16 +37,16 @@
             <div class="site-card-wrapper">
                 <div class="ant-row" style="margin-left: -8px; margin-right: -8px; row-gap: 16px">
                     {% for cat in categories %}
-                        <div name="categories_cards" onclick="window.location.href='/catalog/?category={{ cat.category.slug }}'"
+                        <div name="categories_cards" onclick="window.location.href='/category/{{ cat.slug }}'"
                              class="ant-col ant-col-sm-12 ant-col-md-10 ant-col-lg-6" style="padding-left: 8px; padding-right: 8px; width: 100%; height: 100%">
                             <div class="ant-card ant-card-bordered brand">
                                 <div class="ant-card-head" style="border-bottom:0">
                                     <div class="ant-card-head-wrapper">
-                                        <div class="ant-card-head-title">{{ cat.category.name }} ({{ cat.amount }})</div>
+                                        <div class="ant-card-head-title">{{ cat.name }}</div>
                                    </div>
                                 </div>
                                 <div class="ant-card-body" style="height: 100%; width: 100%">
-                                    <img alt="{{ cat.category.name }}" src="{% if cat.category.file %}{{ cat.category.file.url }}{% else %}{% endif %}" class="brand-image" loading="lazy"
+                                    <img alt="{{ cat.name }}" src="{{ cat.image_link }}" class="brand-image" loading="lazy"
                                          style="color: transparent; object-fit: fill;">
                                 </div>
                             </div>
@@ -73,11 +73,11 @@
             <div class="site-card-wrapper">
                 <div class="ant-row" style="margin-left: -8px; margin-right: -8px; row-gap: 16px;">
                     {% for brand in brands %}
-                        <div onclick="window.location.href='/catalog/?brand={{ brand.brand.slug }}'"
+                        <div onclick="window.location.href='/catalog/?brand={{ brand.slug }}'"
                                 class="ant-col ant-col-sm-12 ant-col-md-10 ant-col-lg-6" style="padding-left: 8px; padding-right: 8px; width: 100%; height: 100%">
                             <div class="ant-card ant-card-bordered brand" style="height: 100%; width: 100%">
                                 <div class="ant-card-body" style="height: 100%; width: 100%">
-                                    <img alt="{{ brand.brand.name }}" src="{% if  brand.brand.file %}{{ brand.brand.file.url }}{% else %}{% endif %}" class="brand-image" loading="lazy"
+                                    <img alt="{{ brand.name }}" src="{{ brand.image_link }}" class="brand-image" loading="lazy"
                                          style="color: transparent; object-fit: fill">
                                 </div>
                             </div>
@@ -87,4 +87,18 @@
             </div>
         </div>
     </div>
+    <br>
+    <br>
+
+    <div class="ant-row" style="margin-left:-8px;margin-right:-8px">
+        <div style="padding-left:8px;padding-right:8px" class="ant-col ant-col-24">
+            <form id="search_form" action="{% url 'catalog' %}" method="GET" style="width: 100%">
+                <input placeholder="Искать оборудование по парт. номеру" class="form-control" id="search_q" name="name" />
+            </form>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
 {% endblock %}

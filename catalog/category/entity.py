@@ -7,3 +7,5 @@ class Category:
     slug: str
     file: str
     children: list['Category']
+    description: str
+    image_link: str

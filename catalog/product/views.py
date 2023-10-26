@@ -42,7 +42,7 @@ class ProductView(ModelViewSet):
 
         results = SearchQuerySet().autocomplete(content=query)
 
-        result = [{'label': product.name, 'value': product.name} for product in [r.object for r in results]]
+        result = [{'label': f"{product.brand.name} {product.category.name} {product.part_number}", 'value': product.part_number} for product in [r.object for r in results]]
 
         return Response(
             status=status.HTTP_200_OK,
