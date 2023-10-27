@@ -9,7 +9,7 @@
         <ol>
             <li>
                 <span class="ant-breadcrumb-link">
-                    <a href="/">Главная</a>
+                    <a href="/catalog">Каталог</a>
                 </span>
                 <span class="ant-breadcrumb-separator">/</span>
             </li>
@@ -184,7 +184,7 @@
                 </ol>
             </nav>
             {% for product in page %}
-                <div class="ant-card ant-card-bordered catalogProductCard" onclick="toggle_more_info('product_specs_'+{{ product.pk }})">
+                <div class="ant-card ant-card-bordered catalogProductCard" onclick="window.location.href='/product/{{ product.brand.slug }}/{{ product.part_number }}'">
                     <div class="ant-card-body">
                         <div class="ant-row">
                             <div class="ant-col ant-col-lg-4">
@@ -200,7 +200,11 @@
                             </div>
                             <div class="ant-col ant-col-lg-7" style="width: 100%">
                                 <div style="display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500; height: 100%; color: rgb(52, 155, 212); float: right;">
-                                    {{ currency.symbol }} {% multiply product.price usd_rub %}
+                                    {% if product.price == 0 %}
+                                        по запросу
+                                    {% else %}
+                                        {{ currency.symbol }} {% multiply product.price usd_rub %}
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

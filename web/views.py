@@ -115,3 +115,14 @@ def category_page(request, slug):
         'child_categories': child_categories,
         'brand_categories': brand_categories
     })
+
+
+def product_page(request, brand_slug: str, part_number: str):
+    product = Products.objects.get(brand__slug=brand_slug, part_number=part_number)
+    # TODO 404 page
+
+    return render(request, 'pages/product.html', {
+        'product': product,
+        'usd_rub': float(ExchangeRates(str(datetime.date.today()))['USD'].rate),
+        'currency': Currencies.objects.get(name='RUB'),
+    })

@@ -1,0 +1,101 @@
+{% extends 'pages/base.html' %}
+{% load static %}
+{% load split_number %}
+{% load custom_tags %}
+
+
+{%  block page_content %}
+    {% csrf_token %}
+    <nav class="ant-breadcrumb" style="margin:16px 0;text-transform:uppercase;letter-spacing:1px;font-size:10px;font-weight:600;color:#349bd4">
+        <ol>
+            <li>
+                <span class="ant-breadcrumb-link">
+                    <a href="/catalog">Каталог</a>
+                </span>
+                <span class="ant-breadcrumb-separator">/</span>
+            </li>
+            {% if product.category.parent %}
+                <li>
+                    <span class="ant-breadcrumb-link">
+                        <a href="/catalog?category={{ product.category.parent.slug }}">{{ product.category.parent }}</a>
+                    </span>
+                    <span class="ant-breadcrumb-separator">/</span>
+                </li>
+            {% endif %}
+            <li>
+                <span class="ant-breadcrumb-link">
+                    <a href="/catalog?brand={{ product.brand.slug }}">{{ product.brand.name }}</a>
+                </span>
+                <span class="ant-breadcrumb-separator">/</span>
+            </li>
+            <li>
+                <span class="ant-breadcrumb-link">
+                    <a href="/catalog?category={{ product.category.slug }}">{{ product.category.name }}</a>
+                </span>
+                <span class="ant-breadcrumb-separator">/</span>
+            </li>
+            {% if product.series %}
+                <li>
+                    <span class="ant-breadcrumb-link">
+                        <a href="/catalog?brand={{ product.brand.slug }}&category={{ product.category.slug }}&series={{ product.series }}">{{ product.series }}</a>
+                    </span>
+                    <span class="ant-breadcrumb-separator">/</span>
+                </li>
+            {% endif %}
+            <li>
+                <span class="ant-breadcrumb-link">
+                    <a href="/catalog?part_number={{ product.part_number }}">{{ product.part_number }}</a>
+                </span>
+                <span class="ant-breadcrumb-separator">/</span>
+            </li>
+        </ol>
+    </nav>
+    <h4>Gamma Group - поставщик сетевого и серверного оборудования</h4>
+    <div style="border-radius:6px;width:100%;min-height:350px;background:url({% static 'img/slider.png' %}) left center no-repeat #ABE1FA;margin-bottom:32px">
+        <div class="ant-row ant-row-middle">
+            <div style="min-height:350px" class="ant-col ant-col-xs-24 ant-col-sm-24 ant-col-md-13 ant-col-lg-10"></div>
+            <div style="vertical-align:middle;padding:24px" class="ant-col ant-col-xs-24 ant-col-sm-24 ant-col-md-11 ant-col-lg-14">
+                <h1 style="color:#1F3D79;margin-bottom:4px;font-size:26px">Электронные Компоненты</h1>
+                <p>Поставщик серверного оборудования, сетевого оборудования и электронных компонентов</p>
+            </div>
+        </div>
+    </div>
+    <div class="ant-card ant-card-bordered catalogProductCard" onclick="window.location.href='/product/{{ product.brand.slug }}/{{ product.part_number }}'">
+        <div class="ant-card-body">
+            <div class="ant-row">
+                <div class="ant-col ant-col-lg-4">
+                    <img loading="lazy" height="100" width="125" src="{{ product.image_link }}" alt="{{ product.brand }} {{ product.part_number }}">
+                </div>
+                <div class="ant-col ant-col-lg-12">
+                    <h2 style="font-weight: 500; font-size: 15px; text-transform: uppercase; margin: 5px 0; width: 100%"><a class="more_info_link">🛈</a> {{ product.part_number }}</h2>
+                    <h3 style="font-size: 11px; color: rgb(125, 135, 156); text-transform: uppercase; margin: 5px 0; width: 100%">
+                        {#                                    {{ product.category }}#}
+                        <strong>{{ product.brand }}</strong>
+                        {{ product.series }}</h3>
+                    <p style="font-size: 12px; width: 100%; word-wrap: break-word">{{ product.name }}</p>
+                </div>
+                <div class="ant-col ant-col-lg-7" style="width: 100%">
+                    <div style="display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500; height: 100%; color: rgb(52, 155, 212); float: right;">
+                        {% if product.price == 0 %}
+                            по запросу
+                        {% else %}
+                            {{ currency.symbol }} {% multiply product.price usd_rub %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ant-card ant-card-bordered">
+        <div class="ant-card-head">
+            <div class="ant-card-head-wrapper">
+                <div class="ant-card-head-title">
+                    Спецификация
+                </div>
+            </div>
+        </div>
+        <div class="ant-card-body">
+            {{ product.description|safe }}
+        </div>
+    </div>
+{% endblock %}
